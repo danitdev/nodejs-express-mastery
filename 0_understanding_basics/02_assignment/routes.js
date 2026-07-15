@@ -16,6 +16,13 @@ const handelReq = (req,res)=>{
             `);
         res.end();
     }
+   else if(url==="/users"&& method ==="GET"){
+        res.setHeader("Content-Type","text/html");
+        for(const user of users){
+            console.log(user);
+        }
+        res.end();
+    }
 }
 
 export{handelReq};
