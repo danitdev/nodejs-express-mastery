@@ -31,6 +31,22 @@ const handelReq = (req,res)=>{
             </html>`);
         res.end();
     }
+    else if(url==="/create-user" && method === "POST"){
+        const body = [];
+        req.on("data",(chunck)=>{
+            body.push(chunck);
+        });
+        req.on("end",()=>{
+            const parsedBody = Buffer.concat(body).toString();
+            const username = parsedBody.split("=")[1];
+            // pushing new data to be shown in /users
+            users.push(username);
+            res.statusCode = 302;
+            res.setHeader("Location","/");
+            res.end();
+        });
+    }
+
 }
 
 export{handelReq};
