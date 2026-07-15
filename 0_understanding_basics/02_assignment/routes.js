@@ -1,7 +1,7 @@
+const users = [];
 const handelReq = (req,res)=>{
     const url = req.url;
     const method = req.method;
-    const users = [];
     if (url === "/" && method === "GET"){
         res.setHeader("Content-Type","text/html");
         res.write(`
