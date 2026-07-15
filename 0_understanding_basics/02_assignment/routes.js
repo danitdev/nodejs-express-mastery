@@ -18,9 +18,17 @@ const handelReq = (req,res)=>{
     }
    else if(url==="/users"&& method ==="GET"){
         res.setHeader("Content-Type","text/html");
+        res.write(`
+            <html>
+                <body>
+                    <ul>`)
         for(const user of users){
-            console.log(user);
+            res.write(`<li/>${user}</li>`);
         }
+        res.write(`
+                    </ul>
+                </body>
+            </html>`);
         res.end();
     }
 }
