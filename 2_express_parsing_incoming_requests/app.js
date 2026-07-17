@@ -1,21 +1,16 @@
 import express from "express";
 import bodyParser from "body-parser";
+import {router as adminRouter} from "./Routes/admin.js";
+import {router as shopRouter} from "./Routes/shop.js";
+
+
 const app = express();
 // this pass a middleware function and it does the whole body parsing we were used to do and then next() to them
 app.use(bodyParser.urlencoded());
 
-app.use("/add-product",(req,res,next)=>{
-    res.send(`<form action="/product" method="POST"><input type="text" name="title"><button type="submit">Add Product!</button></form>`);
-});
-//app.get is same as app.use but limit the req we have also app.post
-app.post("/product",(req,res,next)=>{
-    // redirect 
-    console.log(req.body);
-    res.redirect("/");
-});
-app.use("/",(req,res,next)=>{
-    res.send("<h1>other than the those</h1>");
-});
+app.use(adminRouter);
+app.use(shopRouter);
+
 
 
 app.listen(3000);
