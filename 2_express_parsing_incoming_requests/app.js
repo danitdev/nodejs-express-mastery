@@ -7,7 +7,8 @@ app.use(bodyParser.urlencoded());
 app.use("/add-product",(req,res,next)=>{
     res.send(`<form action="/product" method="POST"><input type="text" name="title"><button type="submit">Add Product!</button></form>`);
 });
-app.use("/product",(req,res,next)=>{
+//app.get is same as app.use but limit the req we have also app.post
+app.post("/product",(req,res,next)=>{
     // redirect 
     console.log(req.body);
     res.redirect("/");
