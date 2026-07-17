@@ -1,8 +1,10 @@
 import express from "express";
+import path from "path";
 const router = express.Router();
 
 router.get("/",(req,res,next)=>{
-    res.send("<h1>Welcome to Shop!</h1>");
+    // serve the html file using res.sendFile
+    res.sendFile(path.join(__dirname,"Views","shop.html"));
 });
 
 
