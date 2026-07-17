@@ -1,5 +1,6 @@
 import express from "express";
-
+import rootDir from "../utils/path.js";
+import path from "path";
 // set router(router is like mini app)
 const router = express.Router();
 
@@ -7,13 +8,13 @@ const router = express.Router();
 //to this file but here we don't need to write it anymore
 //unless if there is a form like below we have to specify /admin/....
 router.get("/add-product",(req,res,next)=>{
-    res.send(`<form action="/admin/add-product" method="POST"><input type="text" name="title"><button type="submit">Add Product!</button></form>`);
+   res.sendFile(path.join(rootDir,"Views","add-product.html"));
 });
 //app.get is same as app.use but limit the req we have also app.post
 router.post("/add-product",(req,res,next)=>{
     // redirect 
     console.log(req.body);
-    res.redirect("/");
+    res.redirect("/shop");
 });
 
 
