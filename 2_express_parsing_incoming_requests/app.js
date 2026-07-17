@@ -6,11 +6,15 @@ import {router as shopRouter} from "./Routes/shop.js";
 
 const app = express();
 // this pass a middleware function and it does the whole body parsing we were used to do and then next() to them
-app.use(bodyParser.urlencoded());
+app.use(bodyParser.urlencoded({extended: false}));
 
 app.use(adminRouter);
 app.use(shopRouter);
-
+// handling other pages
+app.use((req,res,next)=>{
+    // u can chain status with send to set status
+    res.status(404).send("<h1>Page Not Found</h1>");
+})
 
 
 app.listen(3000);
