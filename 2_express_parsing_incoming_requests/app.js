@@ -1,7 +1,7 @@
 import express from "express";
 import path from "path";
 import bodyParser from "body-parser";
-import {router as adminRouter} from "./Routes/admin.js";
+import {router as adminRouter,products} from "./Routes/admin.js";
 import {router as shopRouter} from "./Routes/shop.js";
 import rootDir from "./utils/path.js"
 
