@@ -7,7 +7,7 @@ const router = express.Router();
 router.get("/",(req,res,next)=>{
     // in render specify which file
     // inject products for dynamic adding
-    res.render("shop",{prods: products,docTitle:"Shop"});
+    res.render("shop",{prods: products,pageTitle:"Shop"});
 
 });
 
