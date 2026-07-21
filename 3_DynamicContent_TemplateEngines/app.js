@@ -7,6 +7,13 @@ import rootDir from "./utils/path.js"
 
 
 const app = express();
+// set pug
+app.set("view engine","pug");
+// set views folder
+app.set("views","Views");
+
+
+
 // this pass a middleware function and it does the whole body parsing we were used to do and then next() to them
 app.use(bodyParser.urlencoded({extended: false}));
 // giving acess to users have this static files

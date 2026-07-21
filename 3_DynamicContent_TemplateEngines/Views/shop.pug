@@ -3,7 +3,7 @@ html(lang="en")
     head
         meta(charset="UTF-8")
         meta(name="viewport", content="width=device-width, initial-scale=1.0")
-        title My Shop
+        title #{docTitle}
         link(rel="stylesheet", href="/css/main.css")
         link(rel="stylesheet", href="/css/product.css")
     body 
@@ -14,3 +14,19 @@ html(lang="en")
                         a.active(href="/shop") Shop 
                     li.main-header__item 
                         a(href="/admin/add-product") Add Product 
+        main 
+            if prods.length>0
+                .grid
+                    //- making loop
+                    each prod in prods
+                        article.card.product-item
+                            header.card_header
+                                h1.product_title #{prod.title}
+                            div.card__image
+                                img(src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQMiVAaZpXFUxG-SsGTbFP-TazT_8E1fYPzB3eveycuqA&s=10", alt="A Book")
+                            div.card__content
+                            h2.product__price $19.99
+                            p.product__description A very interesting book about so many even more interesting things!
+                            div.card__actions
+            else 
+                h1 no products

@@ -5,9 +5,10 @@ import path from "path";
 const router = express.Router();
 
 router.get("/",(req,res,next)=>{
-    console.log(products);
-    // serve the html file using res.sendFile
-    res.sendFile(path.join(rootDir,"Views","shop.html"));
+    // in render specify which file
+    // inject products for dynamic adding
+    res.render("shop",{prods: products,docTitle:"Shop"});
+
 });
 
 
