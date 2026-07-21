@@ -12,7 +12,7 @@ const products = [];
 router.get("/add-product",(req,res,next)=>{
     // static form html css handling
 //    res.sendFile(path.join(rootDir,"Views","add-product.html"));
-    res.render("add-product",{pageTitle:"Add Product"});
+    res.render("add-product",{pageTitle:"Add Product",path:"/admin/add-product"});
 });
 //app.get is same as app.use but limit the req we have also app.post
 router.post("/add-product",(req,res,next)=>{

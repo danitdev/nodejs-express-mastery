@@ -29,7 +29,7 @@ app.use("/shop",shopRouter);
 app.use((req,res,next)=>{
     // u can chain status with send to set status
     // passing the page title for ejs
-    res.status(404).render("404",{pageTitle:"Page Not Found"});
+    res.status(404).render("404",{pageTitle:"Page Not Found",path:""});
 })
 
 
