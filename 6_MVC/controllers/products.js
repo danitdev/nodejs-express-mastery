@@ -10,6 +10,7 @@ export const postAddProduct = (req,res,next)=>{
     res.redirect("/shop");
 };
 export const getShop = (req,res,next)=>{
-    const products = Product.fetchAll();
-    res.render("shop",{prods: products,pageTitle:"Shop",path:"/shop"});
+    const products = Product.fetchAll((products)=>{
+        res.render("shop",{prods: products,pageTitle:"Shop",path:"/shop"});
+    });
 }
