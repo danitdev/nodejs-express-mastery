@@ -2,17 +2,25 @@ import fs from "fs";
 import path from "path";
 import rootDir from "../utils/path.js";
 import { json } from "body-parser";
+
 const p = path.join(rootDir,"data","products.json");
+const getProductsFromFile = cb=>{
+    const p = path.join(rootDir,"data","products.json");
+    fs.readFile(p,(err,fileContent)=>{
+        if(err){
+            cb([]);
+        }else{
+            cb(JSON.parse(fileContent));
+        }
+    });
+}
+
 class Product{
     constructor(title){
         this.title = title;
     }
     save(){
-        fs.readFile(p,(err,fileContent)=>{
-            let products = [];
-            if(!err){
-                products = JSON.parse(fileContent);
-            }
+        getProductsFromFile(products=>{
             products.push(this);
             fs.writeFile(p,JSON.stringify(products),(err)=>{
                 console.log(err);
@@ -20,12 +28,7 @@ class Product{
         });
     }
     static fetchAll(cb){
-        fs.readFile(p,(err,fileContent)=>{
-            if(err){
-                cb([]);
-            }
-            cb(JSON.parse(fileContent));
-        });
+        getProductsFromFile(cb);
     }
 }
 export{Product};
