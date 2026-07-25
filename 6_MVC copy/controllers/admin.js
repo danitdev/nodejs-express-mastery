@@ -10,7 +10,7 @@ export const postAddProduct = (req,res,next)=>{
     const price = req.body.price;
     const product = new Product(title,imageUrl,desc,price);
     product.save();
-    res.redirect("/shop");
+    res.redirect("/");
 };
 export const getAdminProducts = (req,res,next)=>{
     const products = Product.fetchAll((products)=>{
