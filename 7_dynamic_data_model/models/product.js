@@ -1,6 +1,7 @@
 import fs from "fs";
 import path from "path";
 import rootDir from "../utils/path.js";
+import crypto from "crypto";
 import { json } from "body-parser";
 
 const p = path.join(rootDir,"data","products.json");
@@ -17,14 +18,14 @@ const getProductsFromFile = cb=>{
 
 class Product{
     constructor(title,imageUrl,desc,price){
+        // adding random UUID using crypto
+        this.id = crypto.randomUUID();
         this.title = title;
         this.imageUrl = imageUrl;
         this.desc = desc;
         this.price = price;
     }
     save(){
-        // adding unique identifier
-        this.id  = Math.random().toString();
         getProductsFromFile(products=>{
             products.push(this);
             fs.writeFile(p,JSON.stringify(products),(err)=>{
