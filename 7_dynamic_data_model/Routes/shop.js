@@ -3,8 +3,8 @@ import express from "express";
 import { getShop , getIndex , getCart, getCheckout,getOrders} from "../controllers/shop.js";
 const router = express.Router();
 
-router.get("/",getShop);
-router.get("/products",getIndex);
+router.get("/",getIndex);
+router.get("/products",getShop);
 router.get("/cart",getCart);
 router.get("/checkout",getCheckout)
 router.get("/orders",getOrders);
