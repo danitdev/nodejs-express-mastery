@@ -23,6 +23,8 @@ class Product{
         this.price = price;
     }
     save(){
+        // adding unique identifier
+        this.id  = Math.random().toString();
         getProductsFromFile(products=>{
             products.push(this);
             fs.writeFile(p,JSON.stringify(products),(err)=>{
