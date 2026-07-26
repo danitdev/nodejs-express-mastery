@@ -20,6 +20,11 @@ export const getIndex = (req,res,next)=>{
 export const getCart = (req,res,next)=>{
     res.render("shop/cart",{path:"/cart",pageTitle:"Your Cart"})
 }
+export const postCart = (req,res,next)=>{
+    const prodId = req.body.productId;
+    console.log(prodId);
+    res.redirect("/cart");
+};
 export const getCheckout = (req,res,next)=>{
     res.render("shop/checkout",{path:"/checkout",pageTitle:"Checkout"})
 }
