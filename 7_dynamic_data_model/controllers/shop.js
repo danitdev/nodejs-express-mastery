@@ -1,14 +1,19 @@
 import { Product } from "../models/product.js";
 
 
-export const getShop = (req,res,next)=>{
+export const getProducts = (req,res,next)=>{
     const products = Product.fetchAll((products)=>{
-        res.render("shop/product-list",{prods: products,pageTitle:"Shop",path:"/"});
+        res.render("shop/product-list",{prods: products,pageTitle:"Shop",path:"/products"});
     });
 };
+export const getProduct = (req,res,next)=>{
+    const prodId = req.params.productId;
+    console.log(prodId);
+    res.redirect("/");
+}
 export const getIndex = (req,res,next)=>{
     const products = Product.fetchAll((products)=>{
-        res.render("shop/index",{prods: products,pageTitle:"All Products",path:"/products"});
+        res.render("shop/index",{prods: products,pageTitle:"All Products",path:"/"});
     });
 }
 export const getCart = (req,res,next)=>{
