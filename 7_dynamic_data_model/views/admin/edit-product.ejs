@@ -18,12 +18,16 @@
             </div>
             <div class="form-control">
                 <label for="price">Price</label>
-                <input type="number" name="price" id="price" step="0.01" value="<%= editing ? product.price : '' %> ">
+                <input type="number" name="price" id="price" step="0.01" value="<%= editing ? product.price : '' %>">
             </div>
             <div class="form-control">
                 <label for="description">Description</label>
-                <textarea name="description" id="description" rows="5"><%= editing ? product.desc : '' %></textarea>
+                <textarea name="desc" id="description" rows="5"><%= editing ? product.desc : '' %></textarea>
             </div>
+            <% if(editing) { %>
+                <input type="hidden" value="<%= product.id%>" name="productId">
+            <% } %>
+
             <button class="btn" type="submit"><% if(editing) {%>Update Product<%} else {%>Add Product<%}%></button>
         </form>
     </main>
