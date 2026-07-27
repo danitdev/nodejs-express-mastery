@@ -49,3 +49,6 @@ export const getAdminProducts = (req,res,next)=>{
                 ,path:"/admin/products"});
     });
 };
+export const postDeleteProduct = (req,res,next)=>{
+    const prodId = req.body.productId;
+};
