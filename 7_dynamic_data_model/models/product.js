@@ -49,6 +49,16 @@ class Product{
             
         });
     }
+    static deleteById(id){
+        getProductsFromFile(products=>{
+            const updatedProducts = products.fiter(p => p.id !== id);
+            fs.writeFile(p,JSON.stringify(updatedProducts),err=>{
+                if(!err){
+                     
+                }
+            });
+        });
+    }
     static fetchAll(cb){
         getProductsFromFile(cb);
     }
