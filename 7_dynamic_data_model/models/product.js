@@ -17,9 +17,9 @@ const getProductsFromFile = cb=>{
 }
 
 class Product{
-    constructor(title,imageUrl,desc,price){
+    constructor(id,title,imageUrl,desc,price){
         // adding random UUID using crypto
-        this.id = crypto.randomUUID();
+        this.id = id || crypto.randomUUID();
         this.title = title;
         this.imageUrl = imageUrl;
         this.desc = desc;
@@ -27,10 +27,26 @@ class Product{
     }
     save(){
         getProductsFromFile(products=>{
-            products.push(this);
-            fs.writeFile(p,JSON.stringify(products),(err)=>{
+            const existingProductIndex = products.findIndex(p=>p.id === this.id);
+            console.log(existingProductIndex);
+            // if the product already exist update it
+            if(existingProductIndex>=0){
+                console.log("existed");
+                const updatingProducts = [...products];
+                updatingProducts[existingProductIndex] = this;
+                fs.writeFile(p,JSON.stringify(updatingProducts),(err)=>{
                 console.log(err);
             });
+            }
+            // else create a new one
+            else{
+                console.log("creating new one...");
+                products.push(this);
+                fs.writeFile(p,JSON.stringify(products),(err)=>{
+                console.log(err);
+                });
+            }
+            
         });
     }
     static fetchAll(cb){
