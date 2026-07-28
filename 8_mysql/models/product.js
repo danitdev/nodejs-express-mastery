@@ -5,18 +5,18 @@ import { poolPromise as db } from "../utils/database.js";
 
 
 class Product{
-    constructor(id,title,imageUrl,desc,price)
+    constructor(id,title,imageUrl,description,price)
     {
         // adding random UUID using crypto
         this.id = id || crypto.randomUUID();
         this.title = title;
         this.imageUrl = imageUrl;
-        this.desc = desc;
+        this.description = description;
         this.price = price;
     }
     save()
     {
-        return db.execute("INSERT INTO products (title,price,imageUrl,description) VALUES (?,?,?,?)",[this.title,this.price,this.imageUrl,this.desc]);
+        return db.execute("INSERT INTO products (title,price,description,imageUrl) VALUES (?,?,?,?)",[this.title,this.price,this.description,this.imageUrl]);
     }    
     static deleteById(id)
     {
@@ -28,7 +28,7 @@ class Product{
     }
     static findById(id)
     {
-    
+        return db.execute("SELECT * FROM products WHERE products.id = ?",[id]);
     }
 }
 export{Product};
