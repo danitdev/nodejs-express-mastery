@@ -2,9 +2,11 @@ import { Product } from "../models/product.js";
 import { Cart } from "../models/cart.js";
 
 export const getProducts = (req,res,next)=>{
-    const products = Product.fetchAll((products)=>{
-        res.render("shop/product-list",{prods: products,pageTitle:"Shop",path:"/products"});
-    });
+    const products = Product.fetchAll()
+        .then(([rows,fieldData])=>{
+            res.render("shop/product-list",{prods: rows,pageTitle:"Shop",path:"/products"});
+        })
+        .catch(err=>{console.log(err);});
 };
 export const getProduct = (req,res,next)=>{
     const prodId = req.params.productId;
@@ -13,9 +15,11 @@ export const getProduct = (req,res,next)=>{
     });
 };
 export const getIndex = (req,res,next)=>{
-    const products = Product.fetchAll((products)=>{
-        res.render("shop/index",{prods: products,pageTitle:"All Products",path:"/"});
-    });
+    const products = Product.fetchAll()
+        .then(([rows,fieldData])=>{
+            res.render("shop/index",{prods: rows,pageTitle:"All Products",path:"/"});
+        })
+        .catch(err=>console.log(err));
 };
 export const getCart = (req,res,next)=>{
     Cart.getCart(cart=>{

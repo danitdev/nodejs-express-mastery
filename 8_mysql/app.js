@@ -13,14 +13,14 @@ const app = express();
 app.set("view engine","ejs");
 // set views folder
 app.set("views","views");
-
-db.execute("SELECT * FROM products")
-    .then(result=>{
-        console.log(result[0],result[1]);
-    })
-    .catch(err=>{
-        console.log(err);
-    });
+//execute a query
+// db.execute("SELECT * FROM products")
+//     .then(result=>{
+//         console.log(result[0],result[1]);
+//     })
+//     .catch(err=>{
+//         console.log(err);
+//     });
 
 // this pass a middleware function and it does the whole body parsing we were used to do and then next() to them
 app.use(bodyParser.urlencoded({extended: false}));
