@@ -10,8 +10,11 @@ export const postAddProduct = (req,res,next)=>{
     const desc = req.body.desc;
     const price = req.body.price;
     const product = new Product(null,title,imageUrl,desc,price);
-    product.save();
-    res.redirect("/");
+    product.save()
+        .then(()=>{
+            res.redirect("/");
+        })
+        .catch(err=>console.log(err));
 };
 export const getEditProduct = (req,res,next)=>{
     const editMode = req.query.edit;
