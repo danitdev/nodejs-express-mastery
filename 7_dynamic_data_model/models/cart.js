@@ -41,6 +41,7 @@ class Cart{
             const updatedCart = {...cart};
             const productIndex = updatedCart.products.findIndex(prod=>prod.id===id);
             const productToDelete = updatedCart.products[productIndex];
+            if(!productToDelete) return;
             updatedCart.products = updatedCart.products.filter(p=>p.id!==id);
             updatedCart.totalPrice -= productPrice * productToDelete.qty;
             fs.writeFile(p,JSON.stringify(updatedCart),err=>{
