@@ -5,7 +5,7 @@ import {router as shopRouter} from "./Routes/shop.js";
 import path from "path";
 import rootDir from "./utils/path.js";
 import { throw404 } from "./controllers/error.js";
-import { poolPromise as db } from "./utils/database.js";
+import {sequelize} from "./utils/database.js";
 
 // add 404 controller
 const app = express();
@@ -13,14 +13,6 @@ const app = express();
 app.set("view engine","ejs");
 // set views folder
 app.set("views","views");
-//execute a query
-// db.execute("SELECT * FROM products")
-//     .then(result=>{
-//         console.log(result[0],result[1]);
-//     })
-//     .catch(err=>{
-//         console.log(err);
-//     });
 
 // this pass a middleware function and it does the whole body parsing we were used to do and then next() to them
 app.use(bodyParser.urlencoded({extended: false}));
@@ -37,4 +29,10 @@ app.use(shopRouter);
 app.use(throw404)
 
 
-app.listen(3000);
+//sync the models to db and creating the table in db
+sequelize.sync()
+    .then(result=>{
+        // console.log(result);
+        app.listen(3000);
+    })
+    .catch(err=>{console.log(err);})
