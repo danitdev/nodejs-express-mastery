@@ -48,11 +48,13 @@ export const postEditProduct = (req,res,next)=>{
     res.redirect("/admin/products");
 };
 export const getAdminProducts = (req,res,next)=>{
-    const products = Product.fetchAll((products)=>{
-        res.render("admin/products"
-            ,{prods: products,pageTitle:"Admin Products"
-                ,path:"/admin/products"});
-    });
+    Product.findAll()
+        .then(products=>{
+            res.render("admin/products"
+                ,{prods: products,pageTitle:"Admin Products"
+                    ,path:"/admin/products"});
+        })
+        .catch(err=>console.log(err));
 };
 export const postDeleteProduct = (req,res,next)=>{
     const prodId = req.body.productId;
