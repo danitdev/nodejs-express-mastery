@@ -9,14 +9,18 @@ export const postAddProduct = (req,res,next)=>{
     const imageUrl = req.body.imageUrl;
     const description = req.body.description;
     const price = req.body.price;
-    Product.create({
+    req.user
+      .createProduct({
         title: title,
         imageUrl: imageUrl,
         description: description,
-        price: price  
-    }).then(result=>{console.log("Created Product")})
-    .catch(err=>console.log(err));
-
+        price: price,
+    })
+        .then(result=>{
+            console.log("Created Product!");
+            res.redirect("/admin/products");
+        })
+        .catch(err=>console.log(err));
 };
 export const getEditProduct = (req,res,next)=>{
     const editMode = req.query.edit;
