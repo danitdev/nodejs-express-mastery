@@ -6,6 +6,10 @@ import path from "path";
 import rootDir from "./utils/path.js";
 import { throw404 } from "./controllers/error.js";
 import {sequelize} from "./utils/database.js";
+//add models
+import { Product } from "./models/product.js";
+import { User } from "./models/user.js";
+
 
 // add 404 controller
 const app = express();
@@ -28,6 +32,10 @@ app.use(shopRouter);
 // handling other pages
 app.use(throw404)
 
+
+//associations(relations)
+Product.belongsTo(User,{constraints: true,onDelete:"CASCADE"});
+User.hasMany(Product);
 
 //sync the models to db and creating the table in db
 sequelize.sync()
