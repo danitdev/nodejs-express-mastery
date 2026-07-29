@@ -62,7 +62,8 @@ export const postEditProduct = (req,res,next)=>{
         .catch(err=>console.log(err));
 };
 export const getAdminProducts = (req,res,next)=>{
-    Product.findAll()
+    req.user
+        .getProducts()
         .then(products=>{
             res.render("admin/products"
                 ,{prods: products,pageTitle:"Admin Products"
