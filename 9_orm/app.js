@@ -9,6 +9,8 @@ import {sequelize} from "./utils/database.js";
 //add models
 import { Product } from "./models/product.js";
 import { User } from "./models/user.js";
+import { Cart } from "./models/cart.js";
+import { CartItem } from "./models/cart-item.js";
 
 
 // add 404 controller
@@ -44,9 +46,13 @@ app.use(throw404)
 //associations(relations)
 Product.belongsTo(User,{constraints: true,onDelete:"CASCADE"});
 User.hasMany(Product);
+User.hasOne(Cart);
+Cart.belongsTo(User);
+Cart.belongsToMany(Product,{through: CartItem});
+Product.belongsToMany(Cart,{through: CartItem});
 
 //sync the models to db and creating the table in db
-sequelize.sync()
+sequelize.sync({force: true})
     .then(result=>{
         return User.findByPk(1);
         // console.log(result);
