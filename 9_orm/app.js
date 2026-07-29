@@ -26,7 +26,15 @@ app.use(bodyParser.urlencoded({extended: false}));
 //and in html files if there is link u have to think u are in public and give the direction from there
 app.use(express.static(path.join(rootDir,"public")));
 
-
+app.use((req,res,next)=>{
+    User.findByPk(1)
+        .then(user=>{
+            // making a param for user
+            req.user = user;
+            next();
+        })
+        .catch(err=>console.log(err));
+});
 app.use("/admin",adminRouter); //the "/admin" filter the path 
 app.use(shopRouter);
 // handling other pages
@@ -40,7 +48,17 @@ User.hasMany(Product);
 //sync the models to db and creating the table in db
 sequelize.sync()
     .then(result=>{
+        return User.findByPk(1);
         // console.log(result);
+    })
+    .then(user=>{
+        if(!user){
+            return User.create({name:"dani",email:"danibignarty@gmail.com"})
+        }
+        return user;
+    })
+    .then(user=>{
+        console.log(user);
         app.listen(3000);
     })
     .catch(err=>{console.log(err);})
