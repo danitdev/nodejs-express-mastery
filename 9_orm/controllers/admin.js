@@ -43,9 +43,19 @@ export const postEditProduct = (req,res,next)=>{
     const updatedPrice = req.body.price;
     const updatedImageUrl = req.body.imageUrl;
     const updatedDescription = req.body.description;
-    const updatedProd = new Product(prodId,updatedTitle,updatedImageUrl,updatedDescription,updatedPrice);
-    updatedProd.save();
-    res.redirect("/admin/products");
+    Product.findByPk(prodId)
+        .then(product=>{
+            product.title = updatedTitle;
+            product.price = updatedPrice;
+            product.description = updatedDescription;
+            product.imageUrl = updatedImageUrl;
+            return product.save();
+        })
+        .then(result=>{
+            console.log("UPDATED PRODUCT");
+            res.redirect("/admin/products");
+        })
+        .catch(err=>console.log(err));
 };
 export const getAdminProducts = (req,res,next)=>{
     Product.findAll()
@@ -58,6 +68,14 @@ export const getAdminProducts = (req,res,next)=>{
 };
 export const postDeleteProduct = (req,res,next)=>{
     const prodId = req.body.productId;
-    Product.deleteById(prodId);
-    res.redirect("/admin/products")
+    // Product.destroy({})
+    Product.findByPk(prodId)
+        .then(product=>{
+            return product.destroy();
+        })
+        .then(result=>{
+            console.log("DESTROYED PRODUCT");
+            res.redirect("/admin/products");
+        })
+        .catch(err=>console.log(err));
 };
