@@ -40,7 +40,7 @@ app.use((req,res,next)=>{
 app.use("/admin",adminRouter); //the "/admin" filter the path 
 app.use(shopRouter);
 // handling other pages
-app.use(throw404)
+app.use(throw404);
 
 
 //associations(relations)
@@ -65,6 +65,9 @@ sequelize.sync({force: true})
     })
     .then(user=>{
         console.log(user);
+        return user.createCart();
+    })
+    .then(cart=>{
         app.listen(3000);
     })
     .catch(err=>{console.log(err);})
