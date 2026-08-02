@@ -39,15 +39,16 @@ app.use(bodyParser.urlencoded({extended: false}));
 app.use(express.static(path.join(rootDir,"public")));
 app.use(session({secret:"my secret",resave:false,saveUninitialized:false,store:store}));
 
-
 app.use((req,res,next)=>{
-    User.findByPk(1)
+    if(!req.session.userId){
+        return next();
+    }
+    User.findByPk(req.session.userId)
         .then(user=>{
-            // making a param for user
             req.user = user;
             next();
         })
-        .catch(err=>console.log(err));
+        .catch(next);
 });
 app.use("/admin",adminRouter); //the "/admin" filter the path 
 app.use(shopRouter);
@@ -74,7 +75,7 @@ store.sync()
     })
     .catch(err=>console.log(err));
 //sync the models to db and creating the table in db
-sequelize.sync({force:true})
+sequelize.sync({force:false})
     .then(result=>{
         return User.findByPk(1);
         // console.log(result);
