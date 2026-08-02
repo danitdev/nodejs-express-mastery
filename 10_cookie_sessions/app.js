@@ -2,6 +2,7 @@ import express from "express";
 import bodyParser from "body-parser";
 import {router as adminRouter} from "./Routes/admin.js";
 import {router as shopRouter} from "./Routes/shop.js";
+import {router as authRouter} from "./Routes/auth.js";
 import path from "path";
 import rootDir from "./utils/path.js";
 import { throw404 } from "./controllers/error.js";
@@ -40,6 +41,7 @@ app.use((req,res,next)=>{
 });
 app.use("/admin",adminRouter); //the "/admin" filter the path 
 app.use(shopRouter);
+app.use(authRouter);
 // handling other pages
 app.use(throw404);
 
