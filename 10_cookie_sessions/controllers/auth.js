@@ -21,3 +21,9 @@ export const postLogin = (req,res,next)=>{
         })
         .catch(err=>console.log(err));
 }
+export const postLogout = (req,res,next)=>{
+    req.session.destroy((err)=>{
+        console.log(err);
+        res.redirect("/");
+    });
+};
