@@ -77,7 +77,7 @@ export const postCartDeleteProduct =(req,res,next)=>{
             return product.cartItem.destroy();
         })
         .then(result=>{
-            res. redirect("/cart");
+            res.redirect("/cart");
             console.log("Product deleted from Cart!");
         })
         .catch(err=>console.log(err));
