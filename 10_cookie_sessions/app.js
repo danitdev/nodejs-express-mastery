@@ -14,6 +14,9 @@ import { Cart } from "./models/cart.js";
 import { CartItem } from "./models/cart-item.js";
 import { Order } from "./models/order.js";
 import { OrderItem } from "./models/order-item.js";
+//import session
+import session from "express-session";
+
 
 // add 404 controller
 const app = express();
@@ -29,6 +32,8 @@ app.use(bodyParser.urlencoded({extended: false}));
 // but u have to remember now u are in public dir
 //and in html files if there is link u have to think u are in public and give the direction from there
 app.use(express.static(path.join(rootDir,"public")));
+app.use(session({secret:"my secret",resave:false,saveUninitialized:false}));
+
 
 app.use((req,res,next)=>{
     User.findByPk(1)
