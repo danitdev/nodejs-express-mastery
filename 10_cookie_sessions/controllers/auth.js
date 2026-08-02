@@ -17,7 +17,10 @@ export const postLogin = (req,res,next)=>{
             // making a param for user
             req.session.isLoggedIn = true;
             req.session.userId = user.id;
-            res.redirect("/");
+            req.session.save(err=>{
+                console.log(err);
+                res.redirect("/");
+            })
         })
         .catch(err=>console.log(err));
 }
