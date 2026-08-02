@@ -1,7 +1,7 @@
 import { Product } from "../models/product.js";
 
 export const getAddProduct = (req,res,next)=>{
-    res.render("admin/edit-product",{pageTitle:"Add Product",path:"/admin/add-product",editing:false});
+    res.render("admin/edit-product",{pageTitle:"Add Product",path:"/admin/add-product",editing:false,isAuth:req.session.isLoggedIn});
 };
 
 export const postAddProduct = (req,res,next)=>{
@@ -37,7 +37,8 @@ export const getEditProduct = (req,res,next)=>{
                     pageTitle:"Edit Product",
                     path:"/admin/edit-product",
                     editing:true,
-                    product:product});
+                    product:product,
+                    isAuth:req.session.isLoggedIn});
         })
         .catch(err=>console.log(err));
 };
@@ -67,7 +68,8 @@ export const getAdminProducts = (req,res,next)=>{
         .then(products=>{
             res.render("admin/products"
                 ,{prods: products,pageTitle:"Admin Products"
-                    ,path:"/admin/products"});
+                    ,path:"/admin/products",
+                    isAuth:req.session.isLoggedIn});
         })
         .catch(err=>console.log(err));
 };
