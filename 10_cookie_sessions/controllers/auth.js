@@ -30,3 +30,6 @@ export const postLogout = (req,res,next)=>{
         res.redirect("/");
     });
 };
+export const getSignup = (req,res,next)=>{
+    res.render("auth/signup",{path:"/signup",pageTitle:"SignUp",isAuth:req.session.isLoggedIn});
+};
