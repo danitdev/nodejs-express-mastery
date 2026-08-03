@@ -65,15 +65,19 @@ export const postSignup = (req,res,next)=>{
         .then(hashedPass=>{
             if(!hashedPass) return;
             const newUser = new User({
-                name:name,
-                email:email,
+                name,
+                email,
                 password:hashedPass
             });
             return newUser.save();
         })
-        .then(result=>{
-            if(result){
-                res.redirect("/login")
+        .then(user=>{
+            if(!user) return;
+            return user.createCart();
+        })
+        .then(cart=>{
+            if(cart){
+                res.redirect("/login");
             }
         })
         .catch(err=>console.log(err));
