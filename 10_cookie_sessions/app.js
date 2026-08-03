@@ -75,22 +75,10 @@ store.sync()
     })
     .catch(err=>console.log(err));
 //sync the models to db and creating the table in db
-sequelize.sync({force:true})
-    .then(result=>{
-        return User.findByPk(1);
-        // console.log(result);
-    })
-    .then(user=>{
-        if(!user){
-            return User.create({name:"dani",email:"danibignarty@gmail.com",password:"passwordCool!"})
-        }
-        return user;
-    })
-    .then(user=>{
-        console.log(user);
-        return user.createCart();
-    })
-    .then(cart=>{
+sequelize.sync()
+    .then(()=>{
         app.listen(3000);
     })
-    .catch(err=>{console.log(err);})
+    .catch(err=>{
+        console.log(err);
+    });
