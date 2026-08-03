@@ -33,3 +33,27 @@ export const postLogout = (req,res,next)=>{
 export const getSignup = (req,res,next)=>{
     res.render("auth/signup",{path:"/signup",pageTitle:"SignUp",isAuth:req.session.isLoggedIn});
 };
+export const postSignup = (req,res,next)=>{
+    const name = req.body.name;
+    const email = req.body.email;
+    const password = req.body.password;
+    const confirmPassword = req.body.confirmPassword;
+    if(password !== confirmPassword) return res.redirect("/signup");
+    User.findOne({where:{email: email}})
+        .then(user=>{
+            if(user){
+                return res.redirect("/signup");
+            }
+            const newUser = new User({
+                name:name,
+                email:email,
+                password:password
+            });
+            newUser.save()
+                .then(result=>{
+                    res.redirect("/login")
+                })
+                .catch(err=>console.log(err));
+        })
+        .catch(err=>console.log(err));
+}
