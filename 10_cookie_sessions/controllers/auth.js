@@ -1,4 +1,4 @@
-
+import bcrypt from "bcryptjs";
 import { User } from "../models/user.js";
 
 export const getLogin = (req,res,next)=>{
@@ -42,18 +42,25 @@ export const postSignup = (req,res,next)=>{
     User.findOne({where:{email: email}})
         .then(user=>{
             if(user){
-                return res.redirect("/signup");
+                res.redirect("/signup");
+                // console.log("user alread exist!");
+                return Promise.reject();
             }
+            return bcrypt.hash(password,12);
+        })
+        .then(hashedPass=>{
+            if(!hashedPass) return;
             const newUser = new User({
                 name:name,
                 email:email,
-                password:password
+                password:hashedPass
             });
-            newUser.save()
-                .then(result=>{
-                    res.redirect("/login")
-                })
-                .catch(err=>console.log(err));
+            return newUser.save();
+        })
+        .then(result=>{
+            if(result){
+                res.redirect("/login")
+            }
         })
         .catch(err=>console.log(err));
 }
