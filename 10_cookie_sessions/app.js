@@ -75,14 +75,14 @@ store.sync()
     })
     .catch(err=>console.log(err));
 //sync the models to db and creating the table in db
-sequelize.sync({force:false})
+sequelize.sync({force:true})
     .then(result=>{
         return User.findByPk(1);
         // console.log(result);
     })
     .then(user=>{
         if(!user){
-            return User.create({name:"dani",email:"danibignarty@gmail.com"})
+            return User.create({name:"dani",email:"danibignarty@gmail.com",password:"passwordCool!"})
         }
         return user;
     })
