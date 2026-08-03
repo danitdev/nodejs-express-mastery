@@ -12,15 +12,29 @@ export const getLogin = (req,res,next)=>{
 export const postLogin = (req,res,next)=>{
     // setting a cookie
     // res.setHeader("Set-Cookie","loggedIn=true; Max-Age=10");
-    User.findByPk(1)
+    const email = req.body.email;
+    const password = req.body.password;
+    User.findOne({where:{email:email}})
         .then(user=>{
-            // making a param for user
-            req.session.isLoggedIn = true;
-            req.session.userId = user.id;
-            req.session.save(err=>{
-                console.log(err);
-                res.redirect("/");
-            })
+            if(!user) return res.redirect("/login");
+            bcrypt.compare(password,user.password)
+                .then(doMatch=>{
+                    if(doMatch){
+                        req.session.isLoggedIn = true;
+                        req.session.userId = user.id;
+                        req.session.save(err=>{
+                            console.log(err);
+                            res.redirect("/");
+                        })
+                    }
+                    else{
+                        res.redirect("/login");
+                    }
+                })
+                .catch(err=>{
+                    console.log(err);
+                    res.redirect("/login");
+                });
         })
         .catch(err=>console.log(err));
 }
