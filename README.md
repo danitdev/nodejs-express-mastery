@@ -1,4 +1,4 @@
-# Node.js Backend Development Course
+# nodejs-express-mastery
 
 This repository contains my progress and projects while learning backend development with Node.js.
 
