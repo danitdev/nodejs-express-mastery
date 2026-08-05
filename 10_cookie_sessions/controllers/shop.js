@@ -9,13 +9,13 @@ export const getProducts = (req,res,next)=>{
 };
 export const getProduct = (req,res,next)=>{
     const prodId = req.params.productId;
-    //alternative way using findAll and filter it 
+        //alternative way using findAll and filter it 
     // Product.findAll({where:{id:prodId}}).then(products=>{
         // res.render("shop/product-detail",{product:products[0],pageTitle:products[0].title,path:"/products"});
     // }).catch(err=>console.log(err));
     // find by pk is for fetching one from table using id
     Product.findByPk(prodId)
-        .then((product)=>{
+        .then((product)=>{          
             res.render("shop/product-detail",{product:product,pageTitle:product.title,path:"/products",isAuth:req.session.isLoggedIn});
         })
         .catch(err=>{console.log(err)})

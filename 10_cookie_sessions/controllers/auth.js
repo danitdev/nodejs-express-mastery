@@ -6,7 +6,6 @@ export const getLogin = (req,res,next)=>{
     // console.log(isLoggedIn);
     //then u can pass isAuth as value isLoggedIn but this
     //is a bad example cuz the thing is u can manipulate data in cookies 
-    console.log(req.session.isLoggedIn);
     res.render("auth/login",{path:"/login",pageTitle:"login",isAuth:req.session.isLoggedIn});
 };
 export const postLogin = (req,res,next)=>{
