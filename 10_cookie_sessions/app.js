@@ -94,7 +94,7 @@ store.sync()
     })
     .catch(err=>console.log(err));
 //sync the models to db and creating the table in db
-sequelize.sync()
+sequelize.sync({force:false})
     .then(()=>{
         app.listen(3000);
     })
