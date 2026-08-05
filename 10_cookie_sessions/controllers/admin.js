@@ -3,7 +3,7 @@ import { Product } from "../models/product.js";
 export const getAddProduct = (req,res,next)=>{
     //better was is using middleware
     // if(!req.session.isLoggedIn) return res.redirect("/login");
-    res.render("admin/edit-product",{pageTitle:"Add Product",path:"/admin/add-product",editing:false,isAuth:req.session.isLoggedIn});
+    res.render("admin/edit-product",{pageTitle:"Add Product",path:"/admin/add-product",editing:false});
 };
 
 export const postAddProduct = (req,res,next)=>{

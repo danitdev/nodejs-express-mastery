@@ -4,7 +4,7 @@ import { Cart } from "../models/cart.js";
 export const getProducts = (req,res,next)=>{
     // find all is fetching the all from table
     Product.findAll().then(products=>{
-        res.render("shop/product-list",{prods: products,pageTitle:"All Products",path:"/products",isAuth:req.session.isLoggedIn});
+        res.render("shop/product-list",{prods: products,pageTitle:"All Products",path:"/products"});
     }).catch(err=>console.log(err));
 };
 export const getProduct = (req,res,next)=>{
@@ -16,7 +16,7 @@ export const getProduct = (req,res,next)=>{
     // find by pk is for fetching one from table using id
     Product.findByPk(prodId)
         .then((product)=>{          
-            res.render("shop/product-detail",{product:product,pageTitle:product.title,path:"/products",isAuth:req.session.isLoggedIn});
+            res.render("shop/product-detail",{product:product,pageTitle:product.title,path:"/products"});
         })
         .catch(err=>{console.log(err)})
 };
@@ -30,7 +30,7 @@ export const getCart = (req,res,next)=>{
         .then(cart=>{
             return cart.getProducts()
                 .then(products=>{
-                    res.render("shop/cart",{path:"/cart",pageTitle:"Your Cart",products:products,isAuth:req.session.isLoggedIn})
+                    res.render("shop/cart",{path:"/cart",pageTitle:"Your Cart",products:products})
                 })
                 .catch(err=>console.log(err));
         })
@@ -109,12 +109,12 @@ export const postOrder = (req,res,next)=>{
         .catch(err=>console.log(err));
 };
 export const getCheckout = (req,res,next)=>{
-    res.render("shop/checkout",{path:"/checkout",pageTitle:"Checkout",isAuth:req.session.isLoggedIn})
+    res.render("shop/checkout",{path:"/checkout",pageTitle:"Checkout"})
 };
 export const getOrders = (req,res,next)=>{
     req.user.getOrders({include:['products']})
         .then(orders=>{
-            res.render("shop/orders",{path:"/orders",pageTitle:"Orders",orders:orders,isAuth:req.session.isLoggedIn})
+            res.render("shop/orders",{path:"/orders",pageTitle:"Orders",orders:orders})
         })
         .catch(err=>{console.log(err)});
 };
