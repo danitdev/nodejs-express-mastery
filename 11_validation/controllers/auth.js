@@ -88,7 +88,7 @@ export const postSignup = (req,res,next)=>{
     const confirmPassword = req.body.confirmPassword;
     if(!errors.isEmpty()){
         console.log(errors.array());
-        return res.status(422).render("auth/signup",{path:"/signup",pageTitle:"SignUp",errorMsg:errors.array()});
+        return res.status(422).render("auth/signup",{path:"/signup",pageTitle:"SignUp",errorMsg:errors.array()[0].msg});
     }
     if(password !== confirmPassword) return res.redirect("/signup");
     User.findOne({where:{email: email}})
