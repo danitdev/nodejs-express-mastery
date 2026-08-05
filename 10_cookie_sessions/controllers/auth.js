@@ -1,6 +1,7 @@
 import crypto from "crypto";
 import bcrypt from "bcryptjs";
 import { User } from "../models/user.js";
+import { Op} from "sequelize";
 import nodemailer from "nodemailer";
 import "dotenv/config";
 
@@ -170,7 +171,7 @@ export const postReset = (req,res,next)=>{
 };
 export const getNewPassword = (req,res,next)=>{
     const token = req.params.token;
-    User.findOne({where:{resetToken:token,resetTokenExpiration:{$gt: Date.now()}}})
+    User.findOne({where:{resetToken:token,resetTokenExpiration:{[Op.gt]: Date.now()}}})
         .then(user=>{
             let message = req.flash("error");
             if(message.length > 0){
@@ -182,8 +183,31 @@ export const getNewPassword = (req,res,next)=>{
                 path:"/new-password",
                 pageTitle:"Reset Password",
                 errorMsg:message,
-                userId: user.id
+                userId: user.id,
+                passwordToken:token
             });
         })
         .catch(err=>{console.log(err)});
+};
+export const postNewPassword = (req,res,next)=>{
+    let resetUser;
+    const newPassword = req.body.password;
+    const userId = req.body.userId;
+    const passwordToken = req.body.passwordToken;
+    User.findOne({where:{resetToken:passwordToken,resetTokenExpiration:{[Op.gt]:Date.now()},id:userId}})
+        .then(user=>{
+            resetUser = user;
+            return bcrypt.hash(newPassword,12)
+        })
+        .then(hashedPassword=>{
+            resetUser.password = hashedPassword;
+            resetUser.resetToken = undefined;
+            resetUser.resetTokenExpiration = undefined;
+            return resetUser.save();
+        })
+        .then(result=>{
+            res.redirect("/login");
+        })
+        .catch(err=>console.log(err));
+
 }
