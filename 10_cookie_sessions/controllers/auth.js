@@ -22,8 +22,7 @@ export const getLogin = (req,res,next)=>{
     let message = req.flash("error");
     if(message.length > 0){
         message = message[0];
-    }
-    else{
+    }else{
         message = null;
     }
     res.render("auth/login",{path:"/login",pageTitle:"login",errorMsg:message});
@@ -51,6 +50,7 @@ export const postLogin = (req,res,next)=>{
                         })
                     }
                     else{
+                        req.flash("error","Invalid email or password.");
                         res.redirect("/login");
                     }
                 })
@@ -68,7 +68,13 @@ export const postLogout = (req,res,next)=>{
     });
 };
 export const getSignup = (req,res,next)=>{
-    res.render("auth/signup",{path:"/signup",pageTitle:"SignUp"});
+    let message = req.flash("error");
+    if(message.length > 0){
+        message = message[0];
+    }else{
+        message = null;
+    }
+    res.render("auth/signup",{path:"/signup",pageTitle:"SignUp",errorMsg:message});
 };
 export const postSignup = (req,res,next)=>{
     const name = req.body.name;
@@ -79,6 +85,7 @@ export const postSignup = (req,res,next)=>{
     User.findOne({where:{email: email}})
         .then(user=>{
             if(user){
+                req.flash("error","E-Mail exists already, pick an another E-Mail.");
                 res.redirect("/signup");
                 // console.log("user alread exist!");
                 return Promise.reject();
@@ -114,4 +121,13 @@ export const postSignup = (req,res,next)=>{
             }
         })
         .catch(err=>console.log(err));
+}
+export const getReset = (req,res,next)=>{
+    let message = req.flash("error");
+    if(message.length>0){
+        message = message[0];
+    }else{
+        message = null;
+    }
+    res.render("auth/reset",{path:"/reset",pageTitle:"Reset Password",errorMessage:message})
 }
