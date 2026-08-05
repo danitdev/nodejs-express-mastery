@@ -1,6 +1,7 @@
 import express from "express";
 import bodyParser from "body-parser";
 import csrf from "csurf";
+import flash from "connect-flash";
 import {router as adminRouter} from "./Routes/admin.js";
 import {router as shopRouter} from "./Routes/shop.js";
 import {router as authRouter} from "./Routes/auth.js";
@@ -45,6 +46,9 @@ app.use(session({secret:"my secret",resave:false,saveUninitialized:false,store:s
 
 //using its middleware
 app.use(csrfProtection);
+//flash message middleware
+app.use(flash());
+
 app.use((req,res,next)=>{
     if(!req.session.userId){
         return next();
