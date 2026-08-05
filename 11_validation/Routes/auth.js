@@ -1,4 +1,5 @@
 import express from "express";
+import {check} from "express-validator";
 import { getLogin, getNewPassword, getReset, getSignup, postLogin, postLogout, postNewPassword, postReset, postSignup } from "../controllers/auth.js";
 
 const router = express.Router();
@@ -7,7 +8,8 @@ router.get("/login",getLogin);
 router.post("/login",postLogin);
 router.post("/logout",postLogout);
 router.get("/signup",getSignup);
-router.post("/signup",postSignup);
+//add validation as middleware check for email with isEmail function
+router.post("/signup",check("email").isEmail(),postSignup);
 router.get("/reset",getReset);
 router.post("/reset",postReset);
 router.get("/reset/:token",getNewPassword);
