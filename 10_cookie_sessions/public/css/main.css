@@ -225,3 +225,18 @@ form {
   display: none;
 }
 
+
+.user-message{
+  margin: auto;
+  width: 90%;
+  border: 1px solid rgb(76, 76, 248);
+  padding: 1rem;
+  border-radius: 3px;
+  background-color: rgb(206, 206, 255);
+  text-align: center;
+}
+.user-message--error{
+  border-color: rgb(238, 26, 26);
+  background: rgb(234, 182, 182);
+  color: red;
+}
