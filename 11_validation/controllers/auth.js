@@ -4,6 +4,7 @@ import { User } from "../models/user.js";
 import { Op} from "sequelize";
 import nodemailer from "nodemailer";
 import "dotenv/config";
+import {validationResult} from "express-validator";
 
 const transporter = nodemailer.createTransport({
     host: "smtp.resend.com",
@@ -79,10 +80,16 @@ export const getSignup = (req,res,next)=>{
     res.render("auth/signup",{path:"/signup",pageTitle:"SignUp",errorMsg:message});
 };
 export const postSignup = (req,res,next)=>{
+    //getting errors from that validation
+    const errors = validationResult(req);
     const name = req.body.name;
     const email = req.body.email;
     const password = req.body.password;
     const confirmPassword = req.body.confirmPassword;
+    if(!errors.isEmpty()){
+        console.log(errors.array());
+        return res.status(422).render("auth/signup",{path:"/signup",pageTitle:"SignUp",errorMsg:errors.array()});
+    }
     if(password !== confirmPassword) return res.redirect("/signup");
     User.findOne({where:{email: email}})
         .then(user=>{
