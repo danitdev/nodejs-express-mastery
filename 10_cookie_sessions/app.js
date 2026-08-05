@@ -1,5 +1,6 @@
 import express from "express";
 import bodyParser from "body-parser";
+import csrf from "csurf";
 import {router as adminRouter} from "./Routes/admin.js";
 import {router as shopRouter} from "./Routes/shop.js";
 import {router as authRouter} from "./Routes/auth.js";
@@ -25,6 +26,9 @@ const  store = new SequelizeStore({
 
 // add 404 controller
 const app = express();
+//init csrf
+const csrfProtection = csrf();
+
 // set ejs
 app.set("view engine","ejs");
 // set views folder
@@ -39,6 +43,8 @@ app.use(bodyParser.urlencoded({extended: false}));
 app.use(express.static(path.join(rootDir,"public")));
 app.use(session({secret:"my secret",resave:false,saveUninitialized:false,store:store}));
 
+//using its middleware
+app.use(csrfProtection);
 app.use((req,res,next)=>{
     if(!req.session.userId){
         return next();
@@ -50,6 +56,15 @@ app.use((req,res,next)=>{
         })
         .catch(next);
 });
+
+// passing local values (like passing things to views but here it is passed to everything)
+app.use((req,res,next)=>{
+    res.locals.isAuth = req.session.isLoggedIn;
+    res.locals.csrfToken = req.csrfToken();
+    next();
+})
+
+
 app.use("/admin",adminRouter); //the "/admin" filter the path 
 app.use(shopRouter);
 app.use(authRouter);
