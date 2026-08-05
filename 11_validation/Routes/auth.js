@@ -10,17 +10,27 @@ router.post("/logout",postLogout);
 router.get("/signup",getSignup);
 //add validation as middleware check for email with isEmail function
 router.post("/signup",
-    [check("email")
-    .isEmail()
-    .withMessage("Please enter a valid email.")
+    [
+    check("email")
+        .isEmail()
+        .withMessage("Please enter a valid email.")
     //a custom validator
-    .custom((value,{req})=>{
-        if(value === "test@test.com"){
-            throw new Error("this email address is forbidden.");
-        }
+        .custom((value,{req})=>{
+            if(value === "test@test.com"){
+                throw new Error("this email address is forbidden.");
+            }
         return true;
-    }),
-    body("password","please enter a password using numbers and text and at least 5 characters.").isLength({min5}).isAlphanumeric()
+        }),
+    body("password","please enter a password using numbers and text and at least 5 characters.")
+        .isLength({min5})
+        .isAlphanumeric(),
+    body("confirmPassword")
+        .custom((value,{...req})=>{
+            if(value !== req.body.password){
+                throw new Error("Passwords have to match.");
+            }
+            return true;
+        })
     ],
     postSignup);
 router.get("/reset",getReset);
