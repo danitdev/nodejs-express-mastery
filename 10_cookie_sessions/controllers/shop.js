@@ -22,7 +22,7 @@ export const getProduct = (req,res,next)=>{
 };
 export const getIndex = (req,res,next)=>{
     Product.findAll().then(products=>{
-        res.render("shop/index",{prods: products,pageTitle:"All Products",path:"/",isAuth:req.session.isLoggedIn});
+        res.render("shop/index",{prods: products,pageTitle:"All Products",path:"/"});
     }).catch(err=>console.log(err));
 };
 export const getCart = (req,res,next)=>{
