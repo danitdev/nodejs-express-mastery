@@ -21,8 +21,14 @@ export const getProduct = (req,res,next)=>{
         .catch(err=>{console.log(err)})
 };
 export const getIndex = (req,res,next)=>{
+    let message = req.flash("error");
+    if(message.length > 0){
+        message = message[0];
+    }else{
+        message = null;
+    }
     Product.findAll().then(products=>{
-        res.render("shop/index",{prods: products,pageTitle:"All Products",path:"/"});
+        res.render("shop/index",{prods: products,pageTitle:"All Products",path:"/",errorMsg:message});
     }).catch(err=>console.log(err));
 };
 export const getCart = (req,res,next)=>{
