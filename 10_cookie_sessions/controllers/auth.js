@@ -6,7 +6,7 @@ export const getLogin = (req,res,next)=>{
     // console.log(isLoggedIn);
     //then u can pass isAuth as value isLoggedIn but this
     //is a bad example cuz the thing is u can manipulate data in cookies 
-    res.render("auth/login",{path:"/login",pageTitle:"login"});
+    res.render("auth/login",{path:"/login",pageTitle:"login",errorMsg:req.flash("error")});
 };
 export const postLogin = (req,res,next)=>{
     // setting a cookie
@@ -15,7 +15,11 @@ export const postLogin = (req,res,next)=>{
     const password = req.body.password;
     User.findOne({where:{email:email}})
         .then(user=>{
-            if(!user) return res.redirect("/login");
+            if(!user) 
+            {
+                req.flash("error","Invalid email or password.");
+                return res.redirect("/login");
+            }
             bcrypt.compare(password,user.password)
                 .then(doMatch=>{
                     if(doMatch){
