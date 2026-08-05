@@ -1,12 +1,32 @@
 import bcrypt from "bcryptjs";
 import { User } from "../models/user.js";
+import nodemailer from "nodemailer";
+import "dotenv/config";
+
+const transporter = nodemailer.createTransport({
+    host: "smtp.resend.com",
+    port: 465,
+    secure: true,
+    auth:{
+        user:"resend",
+        pass: process.env.RESEND_API_KEY
+    }
+});
+
 
 export const getLogin = (req,res,next)=>{
     // const isLoggedIn = req.get("Cookie").split("=")[1];
     // console.log(isLoggedIn);
     //then u can pass isAuth as value isLoggedIn but this
     //is a bad example cuz the thing is u can manipulate data in cookies 
-    res.render("auth/login",{path:"/login",pageTitle:"login",errorMsg:req.flash("error")});
+    let message = req.flash("error");
+    if(message.length > 0){
+        message = message[0];
+    }
+    else{
+        message = null;
+    }
+    res.render("auth/login",{path:"/login",pageTitle:"login",errorMsg:message});
 };
 export const postLogin = (req,res,next)=>{
     // setting a cookie
@@ -80,6 +100,16 @@ export const postSignup = (req,res,next)=>{
         })
         .then(cart=>{
             if(cart){
+                transporter.sendMail({
+                    to:email,
+                    from:"daniDev@resend.dev",
+                    subject:"Singup? Cool!",
+                    html:"<h1>You Signed Up!</h1>"
+                })
+                    .then(result=>{
+                        console.log("email sent to user.")
+                    })
+                    .catch(err=>console.log(err));
                 res.redirect("/login");
             }
         })
