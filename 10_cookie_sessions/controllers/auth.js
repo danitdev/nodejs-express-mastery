@@ -201,12 +201,25 @@ export const postNewPassword = (req,res,next)=>{
         })
         .then(hashedPassword=>{
             resetUser.password = hashedPassword;
-            resetUser.resetToken = undefined;
-            resetUser.resetTokenExpiration = undefined;
+            resetUser.resetToken = null;
+            resetUser.resetTokenExpiration = null;
             return resetUser.save();
         })
         .then(result=>{
-            res.redirect("/login");
+            transporter.sendMail({
+                        to: resetUser.email,
+                        from:"daniDev@resend.dev",
+                        subject:"Password Got reseted",
+                        html:`
+                        <p>you reseted your password.</p>
+                        <p>if it wasn't u i can do nothing D:.</p>
+                        `
+                    })
+                    .then(result=>{
+                        req.flash("error","your password got reset.")
+                        res.redirect("/login");
+                    })
+                    .catch(err=>console.log(err));
         })
         .catch(err=>console.log(err));
 
