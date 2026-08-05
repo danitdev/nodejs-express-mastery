@@ -8,7 +8,7 @@
 
     <main>
         <% if(errorMsg){ %>
-        <div style="color: red;"><%=errorMsg%></div>
+        <div class="user-message user-mesage--error"><%=errorMsg%></div>
         <% } %>
         <form class="login-form" action="/login" method="POST">
             <input type="hidden" name="_csrf" value="<%=csrfToken%>">
