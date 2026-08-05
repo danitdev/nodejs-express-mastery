@@ -35,6 +35,11 @@ export const getEditProduct = (req,res,next)=>{
             if(!product) {
                 return res.redirect("/");
             }
+            // check if u can edit proudct or not
+            if(product.userId !== req.user.id){
+                req.flash("error","this product doesn't belong to you therefore u can't edit it.")
+                return res.redirect("/");
+            }
             res.render("admin/edit-product",{
                     pageTitle:"Edit Product",
                     path:"/admin/edit-product",
@@ -52,6 +57,11 @@ export const postEditProduct = (req,res,next)=>{
     const updatedDescription = req.body.description;
     Product.findByPk(prodId)
         .then(product=>{
+            //check if u can edit product or not
+            if(product.userId !== req.user.id){
+                req.flash("error","this product doesn't belong to you therefore u can't edit it.");
+                return res.redirect("/");
+            }
             product.title = updatedTitle;
             product.price = updatedPrice;
             product.description = updatedDescription;
@@ -59,14 +69,18 @@ export const postEditProduct = (req,res,next)=>{
             return product.save();
         })
         .then(result=>{
-            console.log("UPDATED PRODUCT");
-            res.redirect("/admin/products");
+            if(result){
+                console.log("UPDATED PRODUCT");
+                res.redirect("/admin/products");
+            }
         })
         .catch(err=>console.log(err));
 };
 export const getAdminProducts = (req,res,next)=>{
-    req.user
-        .getProducts()
+    // req.user
+    //     .getProducts()
+    // another way:
+    Product.findAll({where:{userId:req.user.id}})
         .then(products=>{
             res.render("admin/products"
                 ,{prods: products,pageTitle:"Admin Products"
@@ -80,11 +94,17 @@ export const postDeleteProduct = (req,res,next)=>{
     // Product.destroy({})
     Product.findByPk(prodId)
         .then(product=>{
+            if(product.userId !== req.user.id){
+                req.flash("error","this product doesn't belong to you therefore u can't delete it.")
+                return res.redirect("/");
+            }
             return product.destroy();
         })
         .then(result=>{
-            console.log("DESTROYED PRODUCT");
-            res.redirect("/admin/products");
+            if(result){
+                console.log("DESTROYED PRODUCT");
+                res.redirect("/admin/products");
+            }
         })
         .catch(err=>console.log(err));
 };
