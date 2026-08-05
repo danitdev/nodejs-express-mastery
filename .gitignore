@@ -12,3 +12,4 @@
 /8_mysql/node_modules
 /9_orm/node_modules
 /10_cookie_sessions/node_modules
+/10_cookie_sessions/.env
