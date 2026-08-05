@@ -13,5 +13,7 @@
 /8_mysql/.env
 /9_orm/node_modules
 /9_orm/.env
-/10_cookie_sessions/node_modules
-/10_cookie_sessions/.env
+/10_cookie_sessions_auth/node_modules
+/10_cookie_sessions_auth/.env
+/11_validation/node_modules
+/11_validation/.env
