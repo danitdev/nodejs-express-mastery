@@ -151,6 +151,7 @@ export const postReset = (req,res,next)=>{
             })
             .then(result=>{
                 if(result){
+                    res.redirect("/");
                     transporter.sendMail({
                         to: req.body.email,
                         from:"daniDev@resend.dev",
@@ -166,4 +167,23 @@ export const postReset = (req,res,next)=>{
             })
             .catch(err=>console.log(err));
     });
+};
+export const getNewPassword = (req,res,next)=>{
+    const token = req.params.token;
+    User.findOne({where:{resetToken:token,resetTokenExpiration:{$gt: Date.now()}}})
+        .then(user=>{
+            let message = req.flash("error");
+            if(message.length > 0){
+                message = message[0];
+            }else{
+                message = null;
+            }
+            res.render("auth/new-password",{
+                path:"/new-password",
+                pageTitle:"Reset Password",
+                errorMsg:message,
+                userId: user.id
+            });
+        })
+        .catch(err=>{console.log(err)});
 }
