@@ -82,7 +82,7 @@ export const getSignup = (req,res,next)=>{
     }else{
         message = null;
     }
-    res.render("auth/signup",{path:"/signup",pageTitle:"SignUp",errorMsg:message,oldInput:{name:"",email:"",password:"",confirmPassword:""}});
+    res.render("auth/signup",{path:"/signup",pageTitle:"SignUp",errorMsg:message,oldInput:{name:"",email:"",password:"",confirmPassword:""},validationErrors:[]});
 };
 export const postSignup = (req,res,next)=>{
     //getting errors from that validation
@@ -92,7 +92,7 @@ export const postSignup = (req,res,next)=>{
     const password = req.body.password;
     if(!errors.isEmpty()){
         console.log(errors.array());
-        return res.status(422).render("auth/signup",{path:"/signup",pageTitle:"SignUp",errorMsg:errors.array()[0].msg,oldInput:{name:name,email:email,password:password,confirmPassword:req.body.confirmPassword}});
+        return res.status(422).render("auth/signup",{path:"/signup",pageTitle:"SignUp",errorMsg:errors.array()[0].msg,oldInput:{name:name,email:email,password:password,confirmPassword:req.body.confirmPassword},validationErrors:errors.array()});
     }
     //email validation is handled in route async
     bcrypt.hash(password,12)
