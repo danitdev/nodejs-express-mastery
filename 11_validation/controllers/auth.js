@@ -28,7 +28,7 @@ export const getLogin = (req,res,next)=>{
     }else{
         message = null;
     }
-    res.render("auth/login",{path:"/login",pageTitle:"login",errorMsg:message});
+    res.render("auth/login",{path:"/login",pageTitle:"login",errorMsg:message,oldInput:{email:"",password:""},validationErrors:[]});
 };
 export const postLogin = (req,res,next)=>{
     // setting a cookie
@@ -37,7 +37,7 @@ export const postLogin = (req,res,next)=>{
     const password = req.body.password;
     const errors = validationResult(req);
     if(!errors.isEmpty){
-        res.status(422).render("auth/login",{path:"/login",pageTitle:"login",errorMsg:errors.array()[0].msg});
+        res.status(422).render("auth/login",{path:"/login",pageTitle:"login",errorMsg:errors.array()[0].msg,oldInput:{email:email,password:password},validationErrors:errors.array()});
     }
     //this is a logic validation it can be moved to routes but not that importent
     User.findOne({where:{email:email}})
