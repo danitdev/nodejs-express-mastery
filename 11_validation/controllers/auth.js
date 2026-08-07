@@ -35,6 +35,10 @@ export const postLogin = (req,res,next)=>{
     // res.setHeader("Set-Cookie","loggedIn=true; Max-Age=10");
     const email = req.body.email;
     const password = req.body.password;
+    const errors = validationResult(req);
+    if(!errors.isEmpty){
+        res.render("auth/login",{path:"/login",pageTitle:"login",errorMsg:errors.array()[0].msg});
+    }
     User.findOne({where:{email:email}})
         .then(user=>{
             if(!user) 
