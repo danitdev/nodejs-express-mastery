@@ -37,8 +37,9 @@ export const postLogin = (req,res,next)=>{
     const password = req.body.password;
     const errors = validationResult(req);
     if(!errors.isEmpty){
-        res.render("auth/login",{path:"/login",pageTitle:"login",errorMsg:errors.array()[0].msg});
+        res.status(422).render("auth/login",{path:"/login",pageTitle:"login",errorMsg:errors.array()[0].msg});
     }
+    //this is a logic validation it can be moved to routes but not that importent
     User.findOne({where:{email:email}})
         .then(user=>{
             if(!user) 
@@ -81,7 +82,7 @@ export const getSignup = (req,res,next)=>{
     }else{
         message = null;
     }
-    res.render("auth/signup",{path:"/signup",pageTitle:"SignUp",errorMsg:message});
+    res.render("auth/signup",{path:"/signup",pageTitle:"SignUp",errorMsg:message,oldInput:{name:"",email:"",password:"",confirmPassword:""}});
 };
 export const postSignup = (req,res,next)=>{
     //getting errors from that validation
@@ -91,7 +92,7 @@ export const postSignup = (req,res,next)=>{
     const password = req.body.password;
     if(!errors.isEmpty()){
         console.log(errors.array());
-        return res.status(422).render("auth/signup",{path:"/signup",pageTitle:"SignUp",errorMsg:errors.array()[0].msg});
+        return res.status(422).render("auth/signup",{path:"/signup",pageTitle:"SignUp",errorMsg:errors.array()[0].msg,oldInput:{name:name,email:email,password:password,confirmPassword:req.body.confirmPassword}});
     }
     //email validation is handled in route async
     bcrypt.hash(password,12)
