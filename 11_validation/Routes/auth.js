@@ -5,7 +5,16 @@ import { User } from "../models/user.js";
 const router = express.Router();
 
 router.get("/login",getLogin);
-router.post("/login",postLogin);
+router.post("/login",
+    [
+        body("email")
+            .isEmail()
+            .withMessage("Please enter a valid email."),
+        body("password","Password has to be valid.")
+            .isLength({min:8})
+            .isAlphanumeric()  
+    ]
+    ,postLogin);
 router.post("/logout",postLogout);
 router.get("/signup",getSignup);
 //add validation as middleware check for email with isEmail function
