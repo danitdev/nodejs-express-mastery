@@ -85,22 +85,12 @@ export const postSignup = (req,res,next)=>{
     const name = req.body.name;
     const email = req.body.email;
     const password = req.body.password;
-    const confirmPassword = req.body.confirmPassword;
     if(!errors.isEmpty()){
         console.log(errors.array());
         return res.status(422).render("auth/signup",{path:"/signup",pageTitle:"SignUp",errorMsg:errors.array()[0].msg});
     }
-    if(password !== confirmPassword) return res.redirect("/signup");
-    User.findOne({where:{email: email}})
-        .then(user=>{
-            if(user){
-                req.flash("error","E-Mail exists already, pick an another E-Mail.");
-                res.redirect("/signup");
-                // console.log("user alread exist!");
-                return Promise.reject();
-            }
-            return bcrypt.hash(password,12);
-        })
+    //email validation is handled in route async
+    bcrypt.hash(password,12)
         .then(hashedPass=>{
             if(!hashedPass) return;
             const newUser = new User({
