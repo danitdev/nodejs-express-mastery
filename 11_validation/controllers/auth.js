@@ -28,7 +28,7 @@ export const getLogin = (req,res,next)=>{
     }else{
         message = null;
     }
-    res.render("auth/login",{path:"/login",pageTitle:"login",errorMsg:message,oldInput:{email:"",password:""},validationErrors:[]});
+    res.render("auth/login",{path:"/login",pageTitle:"login",errorMsg:message,oldInput:{email:"",password:""}});
 };
 export const postLogin = (req,res,next)=>{
     // setting a cookie
@@ -37,15 +37,14 @@ export const postLogin = (req,res,next)=>{
     const password = req.body.password;
     const errors = validationResult(req);
     if(!errors.isEmpty){
-        res.status(422).render("auth/login",{path:"/login",pageTitle:"login",errorMsg:errors.array()[0].msg,oldInput:{email:email,password:password},validationErrors:errors.array()});
+        res.status(422).render("auth/login",{path:"/login",pageTitle:"login",errorMsg:errors.array()[0].msg,oldInput:{email:email,password:password}});
     }
     //this is a logic validation it can be moved to routes but not that importent
     User.findOne({where:{email:email}})
         .then(user=>{
             if(!user) 
             {
-                req.flash("error","Invalid email or password.");
-                return res.redirect("/login");
+                return res.status(422).render("auth/login",{path:"/login",pageTitle:"login",errorMsg:"Invalid email or password",oldInput:{email:email,password:password}});
             }
             bcrypt.compare(password,user.password)
                 .then(doMatch=>{
@@ -58,8 +57,7 @@ export const postLogin = (req,res,next)=>{
                         })
                     }
                     else{
-                        req.flash("error","Invalid email or password.");
-                        res.redirect("/login");
+                        return res.status(422).render("auth/login",{path:"/login",pageTitle:"login",errorMsg:"Invalid email or password",oldInput:{email:email,password:password}});
                     }
                 })
                 .catch(err=>{
@@ -68,7 +66,7 @@ export const postLogin = (req,res,next)=>{
                 });
         })
         .catch(err=>console.log(err));
-}
+};
 export const postLogout = (req,res,next)=>{
     req.session.destroy((err)=>{
         console.log(err);
