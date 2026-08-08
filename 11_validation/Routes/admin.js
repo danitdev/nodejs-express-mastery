@@ -26,12 +26,12 @@ router.post("/add-product",
             .withMessage("the description has to be min of 5 chars and 500 chars!")
     ]
     ,isAuth,postAddProduct);
-router.get("/edit-product/:productId"
-    , 
+router.get("/edit-product/:productId",isAuth,getEditProduct);
+router.post("/edit-product",
     [
         body("title")
             .isString().isLength({min:3}).withMessage("The title has to be min of 3 chars.").trim(),
-        body("imageUel")
+        body("imageUrl")
             .isURL().withMessage("invalid URL! insert a correct one."),
         body("price")
             .isFloat().withMessage("the price has to be decimal!"),
@@ -39,7 +39,6 @@ router.get("/edit-product/:productId"
             .isLength({min:5,max:500})
             .withMessage("the description has to be min of 5 chars and 500 chars!")
     ]
-    ,isAuth,getEditProduct);
-router.post("/edit-product",isAuth,postEditProduct);
+    ,isAuth,postEditProduct);
 router.post("/delete-product",isAuth,postDeleteProduct);
 export{router};
