@@ -1,16 +1,32 @@
 import { Product } from "../models/product.js";
-
+import { validationResult } from "express-validator";
 export const getAddProduct = (req,res,next)=>{
     //better was is using middleware
     // if(!req.session.isLoggedIn) return res.redirect("/login");
-    res.render("admin/edit-product",{pageTitle:"Add Product",path:"/admin/add-product",editing:false});
+    res.render("admin/edit-product",{pageTitle:"Add Product",path:"/admin/add-product",editing:false,hasError:false,errorMsg:null});
 };
 
 export const postAddProduct = (req,res,next)=>{
+    const errors = validationResult(req);
     const title = req.body.title;
     const imageUrl = req.body.imageUrl;
     const description = req.body.description;
     const price = req.body.price;
+    if(!errors.isEmpty()){
+        return res.status(422).render("admin/edit-product",{
+            pageTitle:"Add Product",
+            path:"/admin/edit-product",
+            editing:false,
+            hasError:true,
+            product:{
+                title:title,
+                imageUrl:imageUrl,
+                price:price,
+                description:description
+            },
+            isAuth:req.session.isLoggedIn,
+            errorMsg: errors.array()[0].msg});
+    }
     req.user
       .createProduct({
         title: title,
@@ -45,7 +61,9 @@ export const getEditProduct = (req,res,next)=>{
                     path:"/admin/edit-product",
                     editing:true,
                     product:product,
-                    isAuth:req.session.isLoggedIn});
+                    isAuth:req.session.isLoggedIn,
+                    hasError:false,
+                    errorMsg:null});
         })
         .catch(err=>console.log(err));
 };
