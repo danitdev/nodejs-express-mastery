@@ -7,11 +7,11 @@ export const getAddProduct = (req,res,next)=>{
 };
 
 export const postAddProduct = (req,res,next)=>{
-    const errors = validationResult(req);
     const title = req.body.title;
     const imageUrl = req.body.imageUrl;
     const description = req.body.description;
     const price = req.body.price;
+    const errors = validationResult(req);
     if(!errors.isEmpty()){
         return res.status(422).render("admin/edit-product",{
             pageTitle:"Add Product",
@@ -73,6 +73,22 @@ export const postEditProduct = (req,res,next)=>{
     const updatedPrice = req.body.price;
     const updatedImageUrl = req.body.imageUrl;
     const updatedDescription = req.body.description;
+    const errors = validationResult(req);
+    if(!errors.isEmpty()){
+        return res.status(422).render("admin/edit-product",{
+            pageTitle:"Edit Product",
+            path:"/admin/edit-product",
+            editing:true,
+            hasError:true,
+            product:{
+                title:updatedTitle,
+                imageUrl:updatedImageUrl,
+                price:updatedPrice,
+                description:updatedDescription
+            },
+            isAuth:req.session.isLoggedIn,
+            errorMsg: errors.array()[0].msg});
+    }
     Product.findByPk(prodId)
         .then(product=>{
             //check if u can edit product or not
