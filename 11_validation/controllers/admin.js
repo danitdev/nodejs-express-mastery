@@ -3,7 +3,7 @@ import { validationResult } from "express-validator";
 export const getAddProduct = (req,res,next)=>{
     //better was is using middleware
     // if(!req.session.isLoggedIn) return res.redirect("/login");
-    res.render("admin/edit-product",{pageTitle:"Add Product",path:"/admin/add-product",editing:false,hasError:false,errorMsg:null});
+    res.render("admin/edit-product",{pageTitle:"Add Product",path:"/admin/add-product",editing:false,hasError:false,errorMsg:null,validationErrors:[]});
 };
 
 export const postAddProduct = (req,res,next)=>{
@@ -25,7 +25,8 @@ export const postAddProduct = (req,res,next)=>{
                 description:description
             },
             isAuth:req.session.isLoggedIn,
-            errorMsg: errors.array()[0].msg});
+            errorMsg: errors.array()[0].msg,
+        validationErrors:errors.array()});
     }
     req.user
       .createProduct({
@@ -63,7 +64,8 @@ export const getEditProduct = (req,res,next)=>{
                     product:product,
                     isAuth:req.session.isLoggedIn,
                     hasError:false,
-                    errorMsg:null});
+                    errorMsg:null,
+                    validationErrors:[]});
         })
         .catch(err=>console.log(err));
 };
@@ -87,7 +89,9 @@ export const postEditProduct = (req,res,next)=>{
                 description:updatedDescription
             },
             isAuth:req.session.isLoggedIn,
-            errorMsg: errors.array()[0].msg});
+            errorMsg: errors.array()[0].msg,
+            validationErrors:errors.array()
+            });
     }
     Product.findByPk(prodId)
         .then(product=>{
