@@ -9,10 +9,12 @@ router.post("/login",
     [
         body("email")
             .isEmail()
-            .withMessage("Please enter a valid email."),
+            .withMessage("Please enter a valid email.")
+            .normalizeEmail(), // normalize email is a built in sanitize
         body("password","Password has to be valid.")
             .isLength({min:8})
             .isAlphanumeric()  
+            .trim() //removes extra whitespace
     ]
     ,postLogin);
 router.post("/logout",postLogout);
@@ -36,10 +38,12 @@ router.post("/signup",
                 return Promise.reject("E-Mail exists already, pick an another E-Mail.");
             }
         });
-    }),
+    })
+        .normalizeEmail(),
     body("password","please enter a password using numbers and text and at least 5 characters.")
         .isLength({min:8})
-        .isAlphanumeric(),
+        .isAlphanumeric()
+        .trim(),
     body("confirmPassword")
         .custom((value,{req})=>{
             if(value !== req.body.password){
@@ -47,6 +51,7 @@ router.post("/signup",
             }
             return true;
         })
+        .trim()
     ],
     postSignup);
 router.get("/reset",getReset);
