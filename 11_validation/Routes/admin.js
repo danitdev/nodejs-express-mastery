@@ -16,25 +16,28 @@ router.get("/products",isAuth,getAdminProducts);
 router.post("/add-product",
     [
         body("title")
-            .isAlphanumeric().isLength({min:3}).trim(),
-        body("imageUel")
-            .isURL(),
+            .isString().isLength({min:3}).withMessage("The title has to be min of 3 chars.").trim(),
+        body("imageUrl")
+            .isURL().withMessage("invalid URL! insert a correct one."),
         body("price")
-            .isFloat(),
+            .isFloat().withMessage("the price has to be decimal!"),
         body("description")
             .isLength({min:5,max:500})
-    ],isAuth,postAddProduct);
+            .withMessage("the description has to be min of 5 chars and 500 chars!")
+    ]
+    ,isAuth,postAddProduct);
 router.get("/edit-product/:productId"
     , 
     [
         body("title")
-            .isString().isLength({min:3}).trim(),
+            .isString().isLength({min:3}).withMessage("The title has to be min of 3 chars.").trim(),
         body("imageUel")
-            .isURL(),
+            .isURL().withMessage("invalid URL! insert a correct one."),
         body("price")
-            .isFloat(),
+            .isFloat().withMessage("the price has to be decimal!"),
         body("description")
             .isLength({min:5,max:500})
+            .withMessage("the description has to be min of 5 chars and 500 chars!")
     ]
     ,isAuth,getEditProduct);
 router.post("/edit-product",isAuth,postEditProduct);
