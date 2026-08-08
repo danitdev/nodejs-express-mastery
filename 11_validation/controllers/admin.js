@@ -83,6 +83,7 @@ export const postEditProduct = (req,res,next)=>{
             editing:true,
             hasError:true,
             product:{
+                id:prodId,
                 title:updatedTitle,
                 imageUrl:updatedImageUrl,
                 price:updatedPrice,
