@@ -39,7 +39,23 @@ export const postAddProduct = (req,res,next)=>{
             console.log("Created Product!");
             res.redirect("/admin/products");
         })
-        .catch(err=>console.log(err));
+        .catch(err=>{
+            // return res.status(500).render("admin/edit-product",{
+            // pageTitle:"Edit Product",
+            // path:"/admin/add-product/",
+            // editing:true,
+            // hasError:true,
+            // product:{
+            //     title:title,
+            //     imageUrl:imageUrl,
+            //     price:price,
+            //     description:description
+            // },
+            // errorMsg: "Database operation failed,please try again.",
+            // validationErrors:[]
+            // });
+            res.redirect("/500");
+        });
 };
 export const getEditProduct = (req,res,next)=>{
     const editMode = req.query.edit;
