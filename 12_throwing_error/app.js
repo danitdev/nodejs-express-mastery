@@ -7,7 +7,7 @@ import {router as shopRouter} from "./Routes/shop.js";
 import {router as authRouter} from "./Routes/auth.js";
 import path from "path";
 import rootDir from "./utils/path.js";
-import { throw404 } from "./controllers/error.js";
+import { throw404, throw500 } from "./controllers/error.js";
 import {sequelize} from "./utils/database.js";
 //add models
 import { Product } from "./models/product.js";
@@ -55,10 +55,15 @@ app.use((req,res,next)=>{
     }
     User.findByPk(req.session.userId)
         .then(user=>{
+            if(!user){
+                return next();
+            }
             req.user = user;
             next();
         })
-        .catch(next);
+        .catch(err=>{
+            throw new Error(err);
+        });
 });
 
 // passing local values (like passing things to views but here it is passed to everything)
@@ -74,7 +79,7 @@ app.use(shopRouter);
 app.use(authRouter);
 // handling other pages
 app.use(throw404);
-
+app.get(throw500)
 
 //associations(relations)
 Product.belongsTo(User,{constraints: true,onDelete:"CASCADE"});
