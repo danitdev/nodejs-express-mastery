@@ -136,7 +136,11 @@ export const postEditProduct = (req,res,next)=>{
                 res.redirect("/admin/products");
             }
         })
-        .catch(err=>console.log(err));
+        .catch(err=>{
+            const error =  new Error(err);
+            error.httpStatusCode = 500;
+            return next(error);
+        });
 };
 export const getAdminProducts = (req,res,next)=>{
     // req.user
@@ -149,7 +153,11 @@ export const getAdminProducts = (req,res,next)=>{
                     ,path:"/admin/products",
                     isAuth:req.session.isLoggedIn});
         })
-        .catch(err=>console.log(err));
+        .catch(err=>{
+            const error =  new Error(err);
+            error.httpStatusCode = 500;
+            return next(error);
+        });
 };
 export const postDeleteProduct = (req,res,next)=>{
     const prodId = req.body.productId;
@@ -168,5 +176,9 @@ export const postDeleteProduct = (req,res,next)=>{
                 res.redirect("/admin/products");
             }
         })
-        .catch(err=>console.log(err));
+        .catch(err=>{
+            const error =  new Error(err);
+            error.httpStatusCode = 500;
+            return next(error);
+        });
 };

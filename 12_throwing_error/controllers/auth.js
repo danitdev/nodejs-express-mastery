@@ -65,7 +65,11 @@ export const postLogin = (req,res,next)=>{
                     res.redirect("/login");
                 });
         })
-        .catch(err=>console.log(err));
+        .catch(err=>{
+            const error =  new Error(err);
+            error.httpStatusCode = 500;
+            return next(error);
+        });
 };
 export const postLogout = (req,res,next)=>{
     req.session.destroy((err)=>{
@@ -118,11 +122,19 @@ export const postSignup = (req,res,next)=>{
                     .then(result=>{
                         console.log("email sent to user.")
                     })
-                    .catch(err=>console.log(err));
+                    .catch(err=>{
+                        const error =  new Error(err);
+                        error.httpStatusCode = 500;
+                        return next(error);
+                    });
                 res.redirect("/login");
             }
         })
-        .catch(err=>console.log(err));
+        .catch(err=>{
+            const error =  new Error(err);
+            error.httpStatusCode = 500;
+            return next(error);
+        });
 }
 export const getReset = (req,res,next)=>{
     let message = req.flash("error");
@@ -163,10 +175,18 @@ export const postReset = (req,res,next)=>{
                         `
                     })
                         .then(result=>console.log("sent email"))
-                        .catch(err=>{console.log(err)});
+                        .catch(err=>{
+                            const error =  new Error(err);
+                            error.httpStatusCode = 500;
+                            return next(error);
+                        });
                 }
             })
-            .catch(err=>console.log(err));
+            .catch(err=>{
+                const error =  new Error(err);
+                error.httpStatusCode = 500;
+                return next(error);
+            });
     });
 };
 export const getNewPassword = (req,res,next)=>{
@@ -187,7 +207,11 @@ export const getNewPassword = (req,res,next)=>{
                 passwordToken:token
             });
         })
-        .catch(err=>{console.log(err)});
+        .catch(err=>{
+            const error =  new Error(err);
+            error.httpStatusCode = 500;
+            return next(error);
+        });
 };
 export const postNewPassword = (req,res,next)=>{
     let resetUser;
@@ -219,8 +243,16 @@ export const postNewPassword = (req,res,next)=>{
                         req.flash("error","your password got reset.")
                         res.redirect("/login");
                     })
-                    .catch(err=>console.log(err));
+                    .catch(err=>{
+                        const error =  new Error(err);
+                        error.httpStatusCode = 500;
+                        return next(error);
+                    });
         })
-        .catch(err=>console.log(err));
+        .catch(err=>{
+            const error =  new Error(err);
+            error.httpStatusCode = 500;
+            return next(error);
+        });
 
 }
