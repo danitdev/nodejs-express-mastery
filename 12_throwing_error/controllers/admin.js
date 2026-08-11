@@ -54,7 +54,10 @@ export const postAddProduct = (req,res,next)=>{
             // errorMsg: "Database operation failed,please try again.",
             // validationErrors:[]
             // });
-            res.redirect("/500");
+            // res.redirect("/500");
+            const error =  new Error(err);
+            error.httpStatusCode = 500;
+            return next(error);
         });
 };
 export const getEditProduct = (req,res,next)=>{
@@ -83,7 +86,11 @@ export const getEditProduct = (req,res,next)=>{
                     errorMsg:null,
                     validationErrors:[]});
         })
-        .catch(err=>console.log(err));
+        .catch(err=>{
+            const error =  new Error(err);
+            error.httpStatusCode = 500;
+            return next(error);
+        });
 };
 export const postEditProduct = (req,res,next)=>{
     const prodId = req.body.productId;
