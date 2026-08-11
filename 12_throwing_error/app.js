@@ -80,7 +80,10 @@ app.use(authRouter);
 // handling other pages
 app.use(throw404);
 app.get(throw500)
-
+//centeral error handling middleware
+app.use((err,req,res,next)=>{
+    res.redirect("/500");
+});
 //associations(relations)
 Product.belongsTo(User,{constraints: true,onDelete:"CASCADE"});
 User.hasMany(Product);
