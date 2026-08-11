@@ -49,6 +49,14 @@ app.use(csrfProtection);
 //flash message middleware
 app.use(flash());
 
+// passing local values (like passing things to views but here it is passed to everything)
+//changing order for this cuz of error handling
+app.use((req,res,next)=>{
+    res.locals.isAuth = req.session.isLoggedIn;
+    res.locals.csrfToken = req.csrfToken();
+    next();
+})
+
 app.use((req,res,next)=>{
     if(!req.session.userId){
         return next();
@@ -62,16 +70,10 @@ app.use((req,res,next)=>{
             next();
         })
         .catch(err=>{
-            throw new Error(err);
+            next(new Error(err));
         });
 });
 
-// passing local values (like passing things to views but here it is passed to everything)
-app.use((req,res,next)=>{
-    res.locals.isAuth = req.session.isLoggedIn;
-    res.locals.csrfToken = req.csrfToken();
-    next();
-})
 
 
 app.use("/admin",adminRouter); //the "/admin" filter the path 
@@ -82,7 +84,9 @@ app.use(throw404);
 app.get(throw500)
 //centeral error handling middleware
 app.use((err,req,res,next)=>{
-    res.redirect("/500");
+    // res.redirect("/500");
+    //we can avoid infinite loop with this:
+    res.status(500).render("500",{pageTitle:"Error!",path:"/500"});
 });
 //associations(relations)
 Product.belongsTo(User,{constraints: true,onDelete:"CASCADE"});
