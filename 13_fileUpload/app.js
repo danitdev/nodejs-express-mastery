@@ -65,6 +65,7 @@ app.use(multer({storage:fileStorage,fileFilter:fileFilter}).single("image"));
 // but u have to remember now u are in public dir
 //and in html files if there is link u have to think u are in public and give the direction from there
 app.use(express.static(path.join(rootDir,"public")));
+app.use("/images",express.static(path.join(rootDir,"images")));
 app.use(session({secret:"my secret",resave:false,saveUninitialized:false,store:store}));
 
 //using its middleware
