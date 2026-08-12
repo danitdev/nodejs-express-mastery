@@ -17,8 +17,6 @@ router.post("/add-product",
     [
         body("title")
             .isString().isLength({min:3}).withMessage("The title has to be min of 3 chars.").trim(),
-        body("imageUrl")
-            .isURL().withMessage("invalid URL! insert a correct one."),
         body("price")
             .isFloat().withMessage("the price has to be decimal!"),
         body("description")
