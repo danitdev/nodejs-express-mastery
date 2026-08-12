@@ -2,6 +2,7 @@ import express from "express";
 import bodyParser from "body-parser";
 import csrf from "csurf";
 import flash from "connect-flash";
+import multer from "multer";
 import {router as adminRouter} from "./Routes/admin.js";
 import {router as shopRouter} from "./Routes/shop.js";
 import {router as authRouter} from "./Routes/auth.js";
@@ -30,6 +31,18 @@ const app = express();
 //init csrf
 const csrfProtection = csrf();
 
+//setting up the file storage for multer
+const fileStorage = multer.diskStorage({
+    destination:(req,file,cb)=>{
+        cb(null,"images");
+    },
+    filename:(req,file,cb)=>{
+        cb(null,new Date().toISOString+"-"+file.originalname);
+    }
+});
+
+
+
 // set ejs
 app.set("view engine","ejs");
 // set views folder
@@ -37,6 +50,9 @@ app.set("views","views");
 
 // this pass a middleware function and it does the whole body parsing we were used to do and then next() to them
 app.use(bodyParser.urlencoded({extended: false}));
+//adding multer - single for single image input - and image for the name input
+app.use(multer({fileStorage:fileStorage,fileFilter:fileFilter}).single("image"));
+
 // giving acess to users have this static files
 // can be images css files... 
 // but u have to remember now u are in public dir
