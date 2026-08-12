@@ -123,9 +123,7 @@ export const postSignup = (req,res,next)=>{
                         console.log("email sent to user.")
                     })
                     .catch(err=>{
-                        const error =  new Error(err);
-                        error.httpStatusCode = 500;
-                        return next(error);
+                        console.error("Failed to send singup email:",err);
                     });
                 res.redirect("/login");
             }
