@@ -37,7 +37,7 @@ const fileStorage = multer.diskStorage({
         cb(null,"images");
     },
     filename:(req,file,cb)=>{
-        cb(null,new Date().toISOString+"-"+file.originalname);
+        cb(null,Date.now()+"-"+file.originalname);
     }
 });
 const fileFilter = (req,file,cb)=>{
@@ -58,7 +58,7 @@ app.set("views","views");
 // this pass a middleware function and it does the whole body parsing we were used to do and then next() to them
 app.use(bodyParser.urlencoded({extended: false}));
 //adding multer - single for single image input - and image for the name input
-app.use(multer({fileStorage:fileStorage,fileFilter:fileFilter}).single("image"));
+app.use(multer({storage:fileStorage,fileFilter:fileFilter}).single("image"));
 
 // giving acess to users have this static files
 // can be images css files... 
@@ -109,7 +109,8 @@ app.get(throw500)
 app.use((err,req,res,next)=>{
     // res.redirect("/500");
     //we can avoid infinite loop with this:
-    res.status(500).render("500",{pageTitle:"Error!",path:"/500"});
+    console.log(err);
+    res.status(500).render("500",{pageTitle:"Error!",path:"/500",isAuth:req.session?.isLoggedIn??false});
 });
 //associations(relations)
 Product.belongsTo(User,{constraints: true,onDelete:"CASCADE"});
