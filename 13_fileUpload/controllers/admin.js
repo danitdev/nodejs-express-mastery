@@ -30,7 +30,6 @@ export const postAddProduct = (req,res,next)=>{
     }
     const imageUrl = image.path;
     if(!errors.isEmpty()){
-        console.log("kabab");
         return res.status(422).render("admin/edit-product",{
             pageTitle:"Add Product",
             path:"/admin/edit-product",
@@ -38,7 +37,6 @@ export const postAddProduct = (req,res,next)=>{
             hasError:true,
             product:{
                 title:title,
-                imageUrl:imageUrl,
                 price:price,
                 description:description
             },
@@ -73,7 +71,6 @@ export const postAddProduct = (req,res,next)=>{
             // });
             // res.redirect("/500");
             const error =  new Error(err);
-            console.log(error);
             error.httpStatusCode = 500;
             return next(error);
         });
