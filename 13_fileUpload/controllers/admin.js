@@ -8,11 +8,29 @@ export const getAddProduct = (req,res,next)=>{
 
 export const postAddProduct = (req,res,next)=>{
     const title = req.body.title;
-    const imageUrl = req.body.imageUrl;
+    const image = req.file;
     const description = req.body.description;
     const price = req.body.price;
     const errors = validationResult(req);
+    if(!image){
+        return res.status(422).render("admin/edit-product",{
+           pageTitle:"Add Product",
+            path:"/admin/edit-product",
+            editing:false,
+            hasError:true,
+            product:{
+                title:title,
+                price:price,
+                description:description
+            },
+            isAuth:req.session.isLoggedIn,
+            errorMsg: "Attached file is not an image.",
+            validationErrors:[]  
+        })
+    }
+    const imageUrl = image.path;
     if(!errors.isEmpty()){
+        console.log("kabab");
         return res.status(422).render("admin/edit-product",{
             pageTitle:"Add Product",
             path:"/admin/edit-product",
@@ -31,7 +49,6 @@ export const postAddProduct = (req,res,next)=>{
     req.user
       .createProduct({
         title: title,
-        imageUrl: imageUrl,
         description: description,
         price: price,
     })
@@ -56,6 +73,7 @@ export const postAddProduct = (req,res,next)=>{
             // });
             // res.redirect("/500");
             const error =  new Error(err);
+            console.log(error);
             error.httpStatusCode = 500;
             return next(error);
         });
@@ -96,7 +114,7 @@ export const postEditProduct = (req,res,next)=>{
     const prodId = req.body.productId;
     const updatedTitle = req.body.title;
     const updatedPrice = req.body.price;
-    const updatedImageUrl = req.body.imageUrl;
+    const image = req.file;
     const updatedDescription = req.body.description;
     const errors = validationResult(req);
     if(!errors.isEmpty()){
@@ -108,7 +126,6 @@ export const postEditProduct = (req,res,next)=>{
             product:{
                 id:prodId,
                 title:updatedTitle,
-                imageUrl:updatedImageUrl,
                 price:updatedPrice,
                 description:updatedDescription
             },
@@ -127,7 +144,10 @@ export const postEditProduct = (req,res,next)=>{
             product.title = updatedTitle;
             product.price = updatedPrice;
             product.description = updatedDescription;
-            product.imageUrl = updatedImageUrl;
+            //updage image if exists
+            if(image){
+                product.imageUrl = image.path;
+            }
             return product.save();
         })
         .then(result=>{
