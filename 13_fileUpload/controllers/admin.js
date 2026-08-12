@@ -28,7 +28,7 @@ export const postAddProduct = (req,res,next)=>{
             validationErrors:[]  
         })
     }
-    const imageUrl = image.path;
+    const imageUrl = "/"+image.path;
     if(!errors.isEmpty()){
         return res.status(422).render("admin/edit-product",{
             pageTitle:"Add Product",
@@ -46,6 +46,7 @@ export const postAddProduct = (req,res,next)=>{
     }
     req.user
       .createProduct({
+        imageUrl:imageUrl,
         title: title,
         description: description,
         price: price,
