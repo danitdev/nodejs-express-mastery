@@ -186,18 +186,24 @@ export const getInvoice = (req,res,next)=>{
             if(order.userId !== req.user.id){
                 return next(new Error("Unauthorized"));
             }
-            fs.readFile(invoicePath,(err,data)=>{
-                if(err){
-                    return next(err);
-                }
-                res.setHeader("Content-Type","application/pdf");
-                // res.setHeader("Content-Disposition","inline");
-                //setting the file type header so it downloads the file
-                res.setHeader("Content-Disposition",`attachment; filename=${invoiceName}`);
-                res.send(data);
-            });
+            // fs.readFile(invoicePath,(err,data)=>{
+            //     if(err){
+            //         return next(err);
+            //     }
+            //     res.setHeader("Content-Type","application/pdf");
+            //     // res.setHeader("Content-Disposition","inline");
+            //     //setting the file type header so it downloads the file
+            //     res.setHeader("Content-Disposition",`attachment; filename=${invoiceName}`);
+            //     res.send(data);
+            // });
+            const file = fs.createReadStream(invoicePath);
+            res.setHeader("Content-Type","application/pdf");
+            res.setHeader("Content-Disposition",`attachment; filename=${invoiceName}`);
+            //pipe the chunks of the files to respond cuz of it is writeable
+            file.pipe(res);
         })
-        .catch();
-    
+        .catch(err=>console.log(err));
+    //streaming better practice then load the data in memory
+      
 
 };
