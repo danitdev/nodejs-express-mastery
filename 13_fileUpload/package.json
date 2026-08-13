@@ -25,6 +25,7 @@
     "multer": "^2.2.0",
     "mysql2": "^3.23.2",
     "nodemailer": "^9.0.4",
+    "pdfkit": "^0.19.1",
     "pug": "^3.0.4",
     "resend": "^6.18.1",
     "sequelize": "^6.37.8"
