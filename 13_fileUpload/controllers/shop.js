@@ -1,6 +1,8 @@
 import fs from "fs";
 import path from "path";
 import rootDir from "../utils/path.js";
+import PDFDocument from "pdfkit";
+
 
 import { Product } from "../models/product.js";
 import { Cart } from "../models/cart.js";
@@ -206,4 +208,153 @@ export const getInvoice = (req,res,next)=>{
     //streaming better practice then load the data in memory
       
 
+};
+
+export const generateInvoice = (req,res,next)=>{
+    const orderId = req.params.orderId;
+    const invoiceName = "invoice"+".pdf";
+    const invoicePath = path.join("data","invoices",invoiceName);
+    Order.findByPk(orderId,{include:Product})
+        .then(order=>{
+            if(!order){
+                return next(new Error("No order found."));
+            }
+            if(order.userId !== req.user.id){
+                return next(new Error("Unauthorized"));
+            }
+            const pdfDoc = new PDFDocument();
+            res.setHeader("Content-Type","application/pdf");
+            res.setHeader("Content-Disposition",`attachment; filename=${invoiceName}`);
+            pdfDoc.pipe(fs.createWriteStream(invoicePath));
+            pdfDoc.pipe(res);
+            pdfDoc.fontSize(26).text("Invoice",{underline:true});
+            let totalPrice = 0;
+            order.products.forEach(product=>{
+                pdfDoc.fontSize(14).text(product.title+"-"+product.orderItem.quantity+"x"+"$"+product.price+"="+(product.price*product.orderItem.quantity).toString())
+                totalPrice += product.price*product.orderItem.quantity;
+            });
+            pdfDoc.text("--------------------");
+            pdfDoc.fontSize(20).text(`Total Price: $${totalPrice}`);
+            pdfDoc.end();
+        })
+        .catch();
+};
+export const generateInvoiceV2 = (req, res, next) => {
+    const orderId = req.params.orderId;
+    const invoiceName = `invoice-${orderId}.pdf`;
+    const invoicePath = path.join("data", "invoices", invoiceName);
+    Order.findByPk(orderId, { include: Product })
+        .then(order => {
+            if (!order) {
+                return next(new Error("No order found."));
+            }
+            if (order.userId !== req.user.id) {
+                return next(new Error("Unauthorized"));
+            }
+            const pdfDoc = new PDFDocument({
+                size: "A4",
+                margin: 50
+            });
+            res.setHeader("Content-Type", "application/pdf");
+            res.setHeader(
+                "Content-Disposition",
+                `attachment; filename="${invoiceName}"`
+            );
+            pdfDoc.pipe(fs.createWriteStream(invoicePath));
+            pdfDoc.pipe(res);
+            pdfDoc
+                .fontSize(28)
+                .font("Helvetica-Bold")
+                .text("INVOICE");
+            pdfDoc
+                .fontSize(10)
+                .font("Helvetica")
+                .fillColor("gray")
+                .text(`Invoice #${orderId}`)
+                .text(`Date: ${new Date().toLocaleDateString()}`);
+            pdfDoc.moveDown(2);
+            pdfDoc
+                .strokeColor("#cccccc")
+                .moveTo(50, pdfDoc.y)
+                .lineTo(545, pdfDoc.y)
+                .stroke();
+            pdfDoc.moveDown(1);
+            pdfDoc
+                .fillColor("black")
+                .fontSize(14)
+                .font("Helvetica-Bold")
+                .text("Bill To");
+            pdfDoc
+                .fontSize(11)
+                .font("Helvetica")
+                .text(req.user.email);
+            pdfDoc.moveDown(2);
+            const tableTop = pdfDoc.y;
+            pdfDoc
+                .font("Helvetica-Bold")
+                .fontSize(11)
+                .text("Product", 50, tableTop)
+                .text("Qty", 330, tableTop)
+                .text("Price", 390, tableTop)
+                .text("Total", 470, tableTop);
+            pdfDoc
+                .strokeColor("#aaaaaa")
+                .moveTo(50, tableTop + 18)
+                .lineTo(545, tableTop + 18)
+                .stroke();
+            let totalPrice = 0;
+            order.products.forEach(product => {
+                const quantity = product.orderItem.quantity;
+                const price = Number(product.price);
+                const productTotal = price * quantity;
+                totalPrice += productTotal;
+                pdfDoc.moveDown(1);
+                const y = pdfDoc.y;
+                pdfDoc
+                    .font("Helvetica")
+                    .fontSize(10)
+                    .fillColor("black")
+                    .text(product.title, 50, y, {
+                        width: 260
+                    })
+                    .text(quantity.toString(), 330, y)
+                    .text(`$${price.toFixed(2)}`, 390, y)
+                    .text(`$${productTotal.toFixed(2)}`, 470, y);
+                pdfDoc
+                    .strokeColor("#eeeeee")
+                    .moveTo(50, y + 20)
+                    .lineTo(545, y + 20)
+                    .stroke();
+            });
+            pdfDoc.moveDown(2);
+            pdfDoc
+                .font("Helvetica-Bold")
+                .fontSize(16)
+                .text(
+                    `Total: $${totalPrice.toFixed(2)}`,
+                    350,
+                    pdfDoc.y,
+                    {
+                        width: 195,
+                        align: "right"
+                    }
+                );
+            pdfDoc
+                .font("Helvetica")
+                .fontSize(9)
+                .fillColor("gray")
+                .text(
+                    "Thank you for your purchase!",
+                    50,
+                    750,
+                    {
+                        align: "center",
+                        width: 495
+                    }
+                );
+            pdfDoc.end();
+        })
+        .catch(err => {
+            next(err);
+        });
 };
