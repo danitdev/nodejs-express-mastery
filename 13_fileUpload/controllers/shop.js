@@ -1,5 +1,10 @@
+import fs from "fs";
+import path from "path";
+import rootDir from "../utils/path.js";
+
 import { Product } from "../models/product.js";
 import { Cart } from "../models/cart.js";
+import {Order} from "../models/order.js";
 
 export const getProducts = (req,res,next)=>{
     // find all is fetching the all from table
@@ -166,4 +171,33 @@ export const getOrders = (req,res,next)=>{
             error.httpStatusCode = 500;
             return next(error);
         });
+};
+
+
+export const getInvoice = (req,res,next)=>{
+    const orderId = req.params.orderId;
+    const invoiceName = "invoice-"+orderId+".pdf";
+    const invoicePath = path.join("data","invoices",invoiceName);
+    Order.findByPk(orderId)
+        .then(order=>{
+            if(!order){
+                return next(new Error("No order found."));
+            }
+            if(order.userId !== req.user.id){
+                return next(new Error("Unauthorized"));
+            }
+            fs.readFile(invoicePath,(err,data)=>{
+                if(err){
+                    return next(err);
+                }
+                res.setHeader("Content-Type","application/pdf");
+                // res.setHeader("Content-Disposition","inline");
+                //setting the file type header so it downloads the file
+                res.setHeader("Content-Disposition",`attachment; filename=${invoiceName}`);
+                res.send(data);
+            });
+        })
+        .catch();
+    
+
 };
