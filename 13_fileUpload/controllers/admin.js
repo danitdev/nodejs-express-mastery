@@ -1,5 +1,8 @@
 import { Product } from "../models/product.js";
 import { validationResult } from "express-validator";
+import { deleteFile } from "../utils/file.js";
+
+
 export const getAddProduct = (req,res,next)=>{
     //better was is using middleware
     // if(!req.session.isLoggedIn) return res.redirect("/login");
@@ -144,6 +147,8 @@ export const postEditProduct = (req,res,next)=>{
             product.description = updatedDescription;
             //updage image if exists
             if(image){
+                //deleting the file
+                deleteFile(product.imageUrl);
                 product.imageUrl = image.path;
             }
             return product.save();
@@ -181,15 +186,20 @@ export const postDeleteProduct = (req,res,next)=>{
     const prodId = req.body.productId;
     // Product.destroy({})
     Product.findByPk(prodId)
-        .then(product=>{
-            if(product.userId !== req.user.id){
-                req.flash("error","this product doesn't belong to you therefore u can't delete it.")
-                return res.redirect("/");
-            }
-            return product.destroy();
-        })
-        .then(result=>{
-            if(result){
+    .then(product=>{
+        if(!product){
+            return res.redirect("/admin/products")
+        }
+        const imageUrl = product.imageUrl
+        if(product.userId !== req.user.id){
+            req.flash("error","this product doesn't belong to you therefore u can't delete it.")
+            return res.redirect("/");
+        }
+        return product.destroy();
+    })
+    .then(result=>{
+        if(result){
+                deleteFile(imageUrl);
                 console.log("DESTROYED PRODUCT");
                 res.redirect("/admin/products");
             }
