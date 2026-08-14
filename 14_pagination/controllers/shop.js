@@ -8,6 +8,8 @@ import { Product } from "../models/product.js";
 import { Cart } from "../models/cart.js";
 import {Order} from "../models/order.js";
 
+const ITEM_PER_PAGE = 2;
+
 export const getProducts = (req,res,next)=>{
     // find all is fetching the all from table
     Product.findAll()
@@ -38,13 +40,15 @@ export const getProduct = (req,res,next)=>{
         });
 };
 export const getIndex = (req,res,next)=>{
+    const page = +req.query.page||1;
+    const offset = (page-1)*ITEM_PER_PAGE;
     let message = req.flash("error");
     if(message.length > 0){
         message = message[0];
     }else{
         message = null;
     }
-    Product.findAll().then(products=>{
+    Product.findAll({limit:ITEM_PER_PAGE,offset:offset}).then(products=>{
         res.render("shop/index",{prods: products,pageTitle:"All Products",path:"/",errorMsg:message});
     })
     .catch(err=>{
