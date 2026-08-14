@@ -17,7 +17,7 @@ export const postAddProduct = (req,res,next)=>{
     const errors = validationResult(req);
     if(!image){
         return res.status(422).render("admin/edit-product",{
-           pageTitle:"Add Product",
+            pageTitle:"Add Product",
             path:"/admin/edit-product",
             editing:false,
             hasError:true,
@@ -33,6 +33,7 @@ export const postAddProduct = (req,res,next)=>{
     }
     const imageUrl = "/"+image.path;
     if(!errors.isEmpty()){
+        deleteFile("/"+image.path);
         return res.status(422).render("admin/edit-product",{
             pageTitle:"Add Product",
             path:"/admin/edit-product",
@@ -149,7 +150,7 @@ export const postEditProduct = (req,res,next)=>{
             if(image){
                 //deleting the file
                 deleteFile(product.imageUrl);
-                product.imageUrl = image.path;
+                product.imageUrl = "/"+image.path;
             }
             return product.save();
         })
@@ -184,13 +185,14 @@ export const getAdminProducts = (req,res,next)=>{
 };
 export const postDeleteProduct = (req,res,next)=>{
     const prodId = req.body.productId;
+    let imageUrl;
     // Product.destroy({})
     Product.findByPk(prodId)
     .then(product=>{
         if(!product){
             return res.redirect("/admin/products")
         }
-        const imageUrl = product.imageUrl
+        imageUrl = product.imageUrl;
         if(product.userId !== req.user.id){
             req.flash("error","this product doesn't belong to you therefore u can't delete it.")
             return res.redirect("/");
@@ -205,7 +207,7 @@ export const postDeleteProduct = (req,res,next)=>{
             }
         })
         .catch(err=>{
-            const error =  new Error(err);
+            const error = new Error(err);
             error.httpStatusCode = 500;
             return next(error);
         });
