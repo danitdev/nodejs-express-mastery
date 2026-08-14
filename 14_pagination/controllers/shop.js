@@ -42,20 +42,31 @@ export const getProduct = (req,res,next)=>{
 export const getIndex = (req,res,next)=>{
     const page = +req.query.page||1;
     const offset = (page-1)*ITEM_PER_PAGE;
+    let numProducts;
     let message = req.flash("error");
     if(message.length > 0){
         message = message[0];
     }else{
         message = null;
     }
-    Product.findAll({limit:ITEM_PER_PAGE,offset:offset}).then(products=>{
-        res.render("shop/index",{prods: products,pageTitle:"All Products",path:"/",errorMsg:message});
-    })
-    .catch(err=>{
-        const error =  new Error(err);
-        error.httpStatusCode = 500;
-        return next(error);
-    });
+    Product.count() 
+        .then(countProducts=>{
+            numProducts = countProducts;
+            Product.findAll({limit:ITEM_PER_PAGE,offset:offset}).then(products=>{
+                res.render("shop/index",{prods: products,pageTitle:"All Products",path:"/",errorMsg:message,totalProducts:numProducts,hasPreviousPage:page>1,hasNextPage:ITEM_PER_PAGE*page<numProducts,nextPage:page+1,previousPage:page-1,lastPage:Math.ceil(numProducts/ITEM_PER_PAGE)});
+            })
+            .catch(err=>{
+                const error =  new Error(err);
+                error.httpStatusCode = 500;
+                return next(error);
+            });
+
+        })
+        .catch(err=>{
+            const error = new Error(err);
+            error.httpStatusCode = 500;
+            return next(error);
+        });
 };
 export const getCart = (req,res,next)=>{
     req.user.getCart()
