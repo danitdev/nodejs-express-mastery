@@ -11,33 +11,36 @@ import {Order} from "../models/order.js";
 const ITEM_PER_PAGE = 2;
 
 export const getProducts = (req,res,next)=>{
+    const page = +req.query.page||1;
+    const offset = (page-1)*ITEM_PER_PAGE;
+    let numProducts;
     // find all is fetching the all from table
-    Product.findAll()
-        .then(products=>{
-            res.render("shop/product-list",{prods: products,pageTitle:"All Products",path:"/products"});
+    Product.count() 
+        .then(countProducts=>{
+            numProducts = countProducts;
+            Product.findAll({limit:ITEM_PER_PAGE,offset:offset})
+                .then(products=>{
+                    res.render("shop/product-list",
+                        {prods: products,
+                        pageTitle:"All Products",
+                        path:"/products",
+                        currentPage:page,
+                        hasPreviousPage:page>1,
+                        hasNextPage:ITEM_PER_PAGE*page<numProducts,
+                        nextPage:page+1,
+                        previousPage:page-1,
+                        lastPage:Math.ceil(numProducts/ITEM_PER_PAGE)});
+                })
+                .catch(err=>{
+                    const error =  new Error(err);
+                    error.httpStatusCode = 500;
+                    return next(error);
+                });
+
         })
         .catch(err=>{
-            const error =  new Error(err);
-            error.httpStatusCode = 500;
-            return next(error);
-        });
-};
-export const getProduct = (req,res,next)=>{
-    const prodId = req.params.productId;
-        //alternative way using findAll and filter it 
-    // Product.findAll({where:{id:prodId}}).then(products=>{
-        // res.render("shop/product-detail",{product:products[0],pageTitle:products[0].title,path:"/products"});
-    // }).catch(err=>console.log(err));
-    // find by pk is for fetching one from table using id
-    Product.findByPk(prodId)
-        .then((product)=>{          
-            res.render("shop/product-detail",{product:product,pageTitle:product.title,path:"/products"});
+
         })
-        .catch(err=>{
-            const error =  new Error(err);
-            error.httpStatusCode = 500;
-            return next(error);
-        });
 };
 export const getIndex = (req,res,next)=>{
     const page = +req.query.page||1;
@@ -78,6 +81,24 @@ export const getIndex = (req,res,next)=>{
             return next(error);
         });
 };
+export const getProduct = (req,res,next)=>{
+    const prodId = req.params.productId;
+        //alternative way using findAll and filter it 
+    // Product.findAll({where:{id:prodId}}).then(products=>{
+        // res.render("shop/product-detail",{product:products[0],pageTitle:products[0].title,path:"/products"});
+    // }).catch(err=>console.log(err));
+    // find by pk is for fetching one from table using id
+    Product.findByPk(prodId)
+        .then((product)=>{          
+            res.render("shop/product-detail",{product:product,pageTitle:product.title,path:"/products"});
+        })
+        .catch(err=>{
+            const error =  new Error(err);
+            error.httpStatusCode = 500;
+            return next(error);
+        });
+};
+
 export const getCart = (req,res,next)=>{
     req.user.getCart()
         .then(cart=>{
