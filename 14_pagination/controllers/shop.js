@@ -53,7 +53,17 @@ export const getIndex = (req,res,next)=>{
         .then(countProducts=>{
             numProducts = countProducts;
             Product.findAll({limit:ITEM_PER_PAGE,offset:offset}).then(products=>{
-                res.render("shop/index",{prods: products,pageTitle:"All Products",path:"/",errorMsg:message,totalProducts:numProducts,hasPreviousPage:page>1,hasNextPage:ITEM_PER_PAGE*page<numProducts,nextPage:page+1,previousPage:page-1,lastPage:Math.ceil(numProducts/ITEM_PER_PAGE)});
+                res.render("shop/index",{
+                            prods: products,
+                            pageTitle:"All Products",
+                            path:"/",
+                            errorMsg:message,
+                            currentPage:page,
+                            hasPreviousPage:page>1,
+                            hasNextPage:ITEM_PER_PAGE*page<numProducts,
+                            nextPage:page+1,
+                            previousPage:page-1,
+                            lastPage:Math.ceil(numProducts/ITEM_PER_PAGE)});
             })
             .catch(err=>{
                 const error =  new Error(err);
