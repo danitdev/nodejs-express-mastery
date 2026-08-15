@@ -1,6 +1,6 @@
 import express from "express";
 // add get and post controller
-import { getAddProduct,postAddProduct, getAdminProducts, getEditProduct, postEditProduct, postDeleteProduct} from "../controllers/admin.js";
+import { getAddProduct,postAddProduct, getAdminProducts, getEditProduct, postEditProduct, deleteProduct} from "../controllers/admin.js";
 // route protection using middleware
 import { isAuth } from "../middleware/is-auth.js";
 import {check, body} from "express-validator"
@@ -36,5 +36,5 @@ router.post("/edit-product",
             .withMessage("the description has to be min of 5 chars and 500 chars!")
     ]
     ,isAuth,postEditProduct);
-router.post("/delete-product",isAuth,postDeleteProduct);
+router.delete("/product/:productId",isAuth,deleteProduct);
 export{router};
