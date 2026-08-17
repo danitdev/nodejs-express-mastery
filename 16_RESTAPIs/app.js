@@ -11,7 +11,7 @@ app.use(bodyParser.json()); //application/json
 app.use((req,res,next)=>{
     // give the access to send req from other origins
     //by the star we set it to everything 
-    res.setHeader("Access-Controll-Allow-Origin","*")
+    res.setHeader("Access-Control-Allow-Origin","*")
     //set the methods they can use
     res.setHeader("Access-Control-Allow-Methods","GET, POST, PUT, PATCH, DELETE");
     res.setHeader("Access-Control-Allow-Headers","Content-Type, Authorization");
